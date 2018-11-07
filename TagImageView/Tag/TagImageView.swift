@@ -38,7 +38,7 @@ private extension TagImageView {
         
         let x = self.width * tagInfo.point.x
         let y = self.height * tagInfo.point.y
-        let tagView = TagView(frame: CGRect(x: x, y: y, width: 14, height: 14))
+        let tagView = TagView(frame: CGRect(x: x, y: y, width: 14, height: 22))
         tagView.input.tagInfo.onNext(tagInfo)
         self.addSubview(tagView)
 

@@ -17,6 +17,7 @@
 		407A78B1219287B10039D820 /* TagInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 407A78B0219287B10039D820 /* TagInfo.swift */; };
 		407A78B4219288640039D820 /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 407A78B3219288640039D820 /* UIView+Extension.swift */; };
 		407A78B82192BEA30039D820 /* TagView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 407A78B72192BEA30039D820 /* TagView.xib */; };
+		407A78BC2192C8990039D820 /* UIView+Frame.m in Sources */ = {isa = PBXBuildFile; fileRef = 407A78BA2192C8980039D820 /* UIView+Frame.m */; };
 		5C50DAF9FBA0E124254E6509 /* Pods_TagImageView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9DFA56F85F7EC80630D8B6E8 /* Pods_TagImageView.framework */; };
 /* End PBXBuildFile section */
 
@@ -34,6 +35,9 @@
 		407A78B0219287B10039D820 /* TagInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagInfo.swift; sourceTree = "<group>"; };
 		407A78B3219288640039D820 /* UIView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
 		407A78B72192BEA30039D820 /* TagView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TagView.xib; sourceTree = "<group>"; };
+		407A78B92192C8970039D820 /* TagImageView-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TagImageView-Bridging-Header.h"; sourceTree = "<group>"; };
+		407A78BA2192C8980039D820 /* UIView+Frame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Frame.m"; sourceTree = "<group>"; };
+		407A78BB2192C8980039D820 /* UIView+Frame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Frame.h"; sourceTree = "<group>"; };
 		9DFA56F85F7EC80630D8B6E8 /* Pods_TagImageView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TagImageView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A6018C3ED219E8D2C56C4EF4 /* Pods-TagImageView.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TagImageView.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TagImageView/Pods-TagImageView.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -97,7 +101,10 @@
 		407A78B2219288570039D820 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
+				407A78BB2192C8980039D820 /* UIView+Frame.h */,
+				407A78BA2192C8980039D820 /* UIView+Frame.m */,
 				407A78B3219288640039D820 /* UIView+Extension.swift */,
+				407A78B92192C8970039D820 /* TagImageView-Bridging-Header.h */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -153,6 +160,7 @@
 				TargetAttributes = {
 					407A78912192869B0039D820 = {
 						CreatedOnToolsVersion = 10.1;
+						LastSwiftMigration = 1010;
 					};
 				};
 			};
@@ -257,6 +265,7 @@
 				407A78B4219288640039D820 /* UIView+Extension.swift in Sources */,
 				407A78AE219287890039D820 /* TagImageView.swift in Sources */,
 				407A78982192869B0039D820 /* ViewController.swift in Sources */,
+				407A78BC2192C8990039D820 /* UIView+Frame.m in Sources */,
 				407A78962192869B0039D820 /* AppDelegate.swift in Sources */,
 				407A78B1219287B10039D820 /* TagInfo.swift in Sources */,
 				407A78AF219287890039D820 /* TagView.swift in Sources */,
@@ -406,6 +415,7 @@
 			baseConfigurationReference = A6018C3ED219E8D2C56C4EF4 /* Pods-TagImageView.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 334F27LL3L;
 				INFOPLIST_FILE = TagImageView/Info.plist;
@@ -416,6 +426,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = Record.TagImageView;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "TagImageView/Extension/TagImageView-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -426,6 +438,7 @@
 			baseConfigurationReference = 3FF604AF01AA7A9D7B560E76 /* Pods-TagImageView.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 334F27LL3L;
 				INFOPLIST_FILE = TagImageView/Info.plist;
@@ -436,6 +449,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = Record.TagImageView;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "TagImageView/Extension/TagImageView-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
