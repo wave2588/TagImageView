@@ -98,6 +98,9 @@ private extension TagView {
             .disposed(by: rx.disposeBag)
     }
     
+    func configureGesture() {
+        
+    }
     
     func configureTagView(info: TagInfo) {
 
