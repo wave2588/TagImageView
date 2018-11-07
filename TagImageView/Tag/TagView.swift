@@ -57,30 +57,33 @@ private extension TagView {
         
     }
     
-    func update(direction: TagDirection) {
-
+    func update(direction: TagDirection, info: TagInfo) {
+        
         width = tagViewW
 
         contentView.top = 0
         contentView.height = 22
 
+        contentView.updateContentView(direction: direction, info: info)
+        
         if direction == .left {
             left = left - tagViewW
             pointShadowView.right = tagViewW
             pointCenterView.center = pointShadowView.center
-            
-            contentView.right = pointShadowView.left
-            
+
+            contentView.right = pointCenterView.left
+
             UIView.animate(withDuration: 0.7) {
-                self.contentView.left = 0
+                self.contentView.left = 4
                 self.contentView.width = self.tagViewW - self.pointShadowView.width
             }
         } else {
-            contentView.left = pointShadowView.right
+            contentView.left = pointShadowView.right - 4
             UIView.animate(withDuration: 0.7) {
                 self.contentView.width = self.tagViewW - self.pointShadowView.width
             }
         }
+        /// 4 是 想让小白点和白线链接起来        pointShadowView.right - 4   self.contentView.left = 4
     }
 }
 
@@ -96,20 +99,7 @@ private extension TagView {
     }
     
     
-    func configureGesture() {
-        
-        let panGesture = UIPanGestureRecognizer()
-        panGesture.rx.event
-            .bind { [unowned self] gesture in
-
-            }
-            .disposed(by: rx.disposeBag)
-        addGestureRecognizer(panGesture)
-    }
-
     func configureTagView(info: TagInfo) {
-
-        configureGesture()
 
         clipsToBounds = true
         
@@ -134,7 +124,9 @@ private extension TagView {
         titleLbl.text = info.title
         titleLbl.font = UIFont(name: "PingFangSC-Medium", size: 12)
         titleLbl.sizeToFit()
-        tagViewW = pointShadowView.width + 25 + titleLbl.width           /// 25 是白线的宽度
+        
+        let contentViewW = 25 + titleLbl.width + 12               /// 25 是白线的宽度  12是白线和文字的间距 + 文字最后的间距
+        tagViewW = pointShadowView.width + contentViewW
         
         guard let superViewW = superview?.width,
               let _ = superview?.height else {
@@ -144,9 +136,9 @@ private extension TagView {
         addSubview(contentView)
 
         if left + tagViewW > superViewW {
-            update(direction: .left)
+            update(direction: .left, info: info)
         } else {
-            update(direction: .right)
+            update(direction: .right, info: info)
         }
     }
 }

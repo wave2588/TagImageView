@@ -9,34 +9,57 @@
 import UIKit
 
 class TagContentView: UIView {
-
-    enum TagDirection {
-        case left
-        case right
-    }
     
-//    /// 内容部分
-//    private var containerView = UIView()
     private var lineView = UIView()
-//    private var titleLbl = UILabel()
-//    private var visualEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
-
-
+    private var titleLbl = UILabel()
     
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         
-        backgroundColor = .red
+        configureUI()
     }
     
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+extension TagContentView {
+    
+    func updateContentView(direction: TagDirection, info: TagInfo) {
+
+        titleLbl.text = info.title
+        titleLbl.sizeToFit()
+        titleLbl.centerY = centerY
+
+        lineView.centerY = centerY
+        lineView.width = 25
+        lineView.height = 1
+
+        /// 文字在左边
+        if direction == .left {
+            
+            titleLbl.left = 6
+            lineView.left = titleLbl.right + 6
+        } else {
+            lineView.left = 0
+            titleLbl.left = lineView.right + 6
+        }
+    }
 }
 
 private extension TagContentView {
     
     func configureUI() {
         
+        clipsToBounds = true
+
+        lineView.backgroundColor = .white
+        addSubview(lineView)
         
+        titleLbl.font = UIFont(name: "PingFangSC-Medium", size: 12)
+        titleLbl.textColor = .white
+        addSubview(titleLbl)
     }
 }
 

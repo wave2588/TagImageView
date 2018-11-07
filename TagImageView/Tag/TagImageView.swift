@@ -71,7 +71,7 @@ private extension TagImageView {
                         x: point.x / self.width,
                         y: point.y / self.height
                     ),
-                    title: "点击添加fdsafsdafsda"
+                    title: "哈哈哈fdsafsdafsdafsd"
                 )
                 self.add(tagInfo: tagInfo)
             })
