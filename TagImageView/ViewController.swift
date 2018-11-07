@@ -7,14 +7,23 @@
 //
 
 import UIKit
+import RxSwift
 
 class ViewController: UIViewController {
 
+    @IBOutlet weak var tagImageView: TagImageView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+
+        
+        let tagInfoOne = TagInfo(point: CGPoint(x: 0.2, y: 0.3), title: "哈哈哈")
+        let tagInfoTwo = TagInfo(point: CGPoint(x: 0.2, y: 0.8), title: "哈哈哈")
+        
+        let infos = [tagInfoOne, tagInfoTwo]
+        
+        tagImageView.inputs.tagInfos.onNext(infos)
     }
 
 
 }
-
