@@ -8,11 +8,18 @@
 
 import UIKit
 import RxSwift
+import RxCocoa
 import NSObject_Rx
 import SwifterSwift
 
+enum TagDirection {
+    case left
+    case right
+}
+
 protocol TagViewInputs {
     
+    /// tag 信息
     var tagInfo: PublishSubject<TagInfo> { get }
 }
 
@@ -22,15 +29,13 @@ class TagView: UIView {
     let tagInfo = PublishSubject<TagInfo>()
     
     /// 白点
-    private var pointView = UIView()
+    private var pointCenterView = UIView()
     /// 白点阴影
     private var pointShadowView = UIView()
     
-    /// 内容部分
-    private var containerView = UIView()
-    private var lineView = UIView()
-    private var titleLbl = UILabel()
-    private var visualEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
+    private var tagViewW: CGFloat = 0
+    
+    private var contentView = TagContentView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -41,19 +46,43 @@ class TagView: UIView {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        let maskPath = UIBezierPath(roundedRect: bounds, byRoundingCorners: [.topLeft, .bottomLeft, .bottomRight], cornerRadii: CGSize(width: 11, height: 11))
-        let maskLayer = CAShapeLayer()
-        maskLayer.frame = visualEffectView.bounds
-        maskLayer.path = maskPath.cgPath
-        visualEffectView.layer.mask = maskLayer
-    }
 }
 
 extension TagView: TagViewInputs {}
+
+private extension TagView {
+
+    func changeLocationOrigin(gesture: UIPanGestureRecognizer) {
+        self.origin = gesture.location(in: self.superview)
+        
+    }
+    
+    func update(direction: TagDirection) {
+
+        width = tagViewW
+
+        contentView.top = 0
+        contentView.height = 22
+
+        if direction == .left {
+            left = left - tagViewW
+            pointShadowView.right = tagViewW
+            pointCenterView.center = pointShadowView.center
+            
+            contentView.right = pointShadowView.left
+            
+            UIView.animate(withDuration: 0.7) {
+                self.contentView.left = 0
+                self.contentView.width = self.tagViewW - self.pointShadowView.width
+            }
+        } else {
+            contentView.left = pointShadowView.right
+            UIView.animate(withDuration: 0.7) {
+                self.contentView.width = self.tagViewW - self.pointShadowView.width
+            }
+        }
+    }
+}
 
 private extension TagView {
     
@@ -66,10 +95,22 @@ private extension TagView {
             .disposed(by: rx.disposeBag)
     }
     
+    
+    func configureGesture() {
+        
+        let panGesture = UIPanGestureRecognizer()
+        panGesture.rx.event
+            .bind { [unowned self] gesture in
+
+            }
+            .disposed(by: rx.disposeBag)
+        addGestureRecognizer(panGesture)
+    }
+
     func configureTagView(info: TagInfo) {
-        
-        debugPrint(info)
-        
+
+        configureGesture()
+
         clipsToBounds = true
         
         /// 小黑点
@@ -79,56 +120,34 @@ private extension TagView {
         addSubview(pointShadowView)
 
         /// 小白点
-        pointView.frame = CGRect(x: 4, y: (height - 6) * 0.5, width: 6, height: 6)
-        pointView.cornerRadius = 3
-        pointView.backgroundColor = UIColor.white
-        pointView.shadowOffset = CGSize(width: 0, height: 1)
-        pointView.shadowColor = UIColor.black
-        pointView.shadowRadius = 1.5
-        pointView.shadowOpacity = 0.5
-        addSubview(pointView)
-        
-        /// 容器 view
-        containerView.isHidden = true
-        containerView.left = pointView.right
-        containerView.top = 0
-        containerView.height = height
-        containerView.width = 10
-        addSubview(containerView)
-        
-        /// 横线
-        lineView.frame = CGRect(x: 0, y: containerView.height * 0.5, width: 25, height: 1)
-        lineView.backgroundColor = UIColor.white
-        containerView.addSubview(lineView)
-        
-        /// 文字背景阴影
-        visualEffectView.left = lineView.right
-        visualEffectView.top = 0
-        visualEffectView.height = 22
-        containerView.addSubview(visualEffectView)
-        
-        /// 文字
+        pointCenterView.size = CGSize(width: 6, height: 6)
+        pointCenterView.center = pointShadowView.center
+        pointCenterView.cornerRadius = 3
+        pointCenterView.backgroundColor = UIColor.white
+        pointCenterView.shadowOffset = CGSize(width: 0, height: 1)
+        pointCenterView.shadowColor = UIColor.black
+        pointCenterView.shadowRadius = 1.5
+        pointCenterView.shadowOpacity = 0.5
+        addSubview(pointCenterView)
+
+        let titleLbl = UILabel()
         titleLbl.text = info.title
         titleLbl.font = UIFont(name: "PingFangSC-Medium", size: 12)
-        titleLbl.textColor = .white
         titleLbl.sizeToFit()
-        titleLbl.left = lineView.right + 6
-        titleLbl.centerY = lineView.centerY
-        containerView.addSubview(titleLbl)
-
-        visualEffectView.width = titleLbl.width + 12
+        tagViewW = pointShadowView.width + 25 + titleLbl.width           /// 25 是白线的宽度
         
-        containerView.isHidden = false
-        UIView.animate(withDuration: 0.7, animations: {
-            self.containerView.width = 25 + self.visualEffectView.width
-            self.width = self.pointShadowView.width + self.containerView.width
-        }) { _ in
-            debugPrint(self.containerView)
+        guard let superViewW = superview?.width,
+              let _ = superview?.height else {
+                return
         }
+        
+        addSubview(contentView)
 
-        /// 在这里要计算是向右还是向左
-        
-        
+        if left + tagViewW > superViewW {
+            update(direction: .left)
+        } else {
+            update(direction: .right)
+        }
     }
 }
 
@@ -151,6 +170,5 @@ private extension TagView {
     func removeAnimation() {
         //        pointShadowView.removeAnimation(forKey: "cka")
     }
-    
 }
 

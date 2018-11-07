@@ -17,7 +17,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
 
         
-        let tagInfoOne = TagInfo(point: CGPoint(x: 0.2, y: 0.3), title: "哈哈哈")
+        let tagInfoOne = TagInfo(point: CGPoint(x: 0.2, y: 0.3), title: "哈哈哈fdsafsdafsdafsd")
         let tagInfoTwo = TagInfo(point: CGPoint(x: 0.2, y: 0.8), title: "哈哈哈")
         
         let infos = [tagInfoOne, tagInfoTwo]

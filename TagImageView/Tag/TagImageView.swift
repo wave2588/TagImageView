@@ -39,11 +39,8 @@ private extension TagImageView {
         let x = self.width * tagInfo.point.x
         let y = self.height * tagInfo.point.y
         let tagView = TagView(frame: CGRect(x: x, y: y, width: 14, height: 22))
-        tagView.input.tagInfo.onNext(tagInfo)
         self.addSubview(tagView)
-
-        /// 在这里要计算 tagView 的宽高, 显示左右位置判断, 做动画
-        
+        tagView.input.tagInfo.onNext(tagInfo)
     }
 }
 
@@ -67,13 +64,14 @@ private extension TagImageView {
         let tapGesture = UITapGestureRecognizer()
         tapGesture.rx.event
             .bind(onNext: { [unowned self] gesture in
+                
                 let point = gesture.location(in: self)
                 let tagInfo = TagInfo(
                     point: CGPoint(
                         x: point.x / self.width,
                         y: point.y / self.height
                     ),
-                    title: "点击添加"
+                    title: "点击添加fdsafsdafsda"
                 )
                 self.add(tagInfo: tagInfo)
             })

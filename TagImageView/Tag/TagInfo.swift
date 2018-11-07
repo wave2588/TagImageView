@@ -9,14 +9,6 @@
 import UIKit
 
 struct TagInfo {
-
-    enum TagDirection {
-        case left
-        case right
-    }
-    
-    /// 方向
-    var direction: TagDirection = .right
     
     /// 比例 (0 ~ 1)
     var point: CGPoint = CGPoint(x: 0, y: 0)
