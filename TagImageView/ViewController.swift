@@ -17,16 +17,16 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let tagInfoOne = TagInfo(
-            centerPoint: CGPoint(x: 0.5, y: 0.5),
-            title: "123321",
-            titleCenterPoint: CGPoint(x: 0.53, y: 0.5),
-            direction: .left
-        )
-        
-        let infos = [tagInfoOne]
+//        let tagInfoOne = TagInfo(
+//            centerPoint: CGPoint(x: 0.5, y: 0.5),
+//            title: "123321",
+//            contentPoint: CGPoint(x: 0.53, y: 0.5),
+//            direction: .left
+//        )
+//        
+//        let infos = [tagInfoOne]
         tagImageView.inputs.state.accept(.edit)
-        tagImageView.inputs.addTagInfos.accept(infos)
+//        tagImageView.inputs.addTagInfos.accept(infos)
         
         let tap = UITapGestureRecognizer()
         tap.rx.event.bind { _ in

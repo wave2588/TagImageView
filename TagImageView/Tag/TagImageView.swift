@@ -10,6 +10,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 import NSObject_Rx
+import SwifterSwift
 
 /// UIImageView 有以下三个模式可供选择
 enum State {
@@ -48,24 +49,57 @@ extension TagImageView: TagImageViewInputs {}
 private extension TagImageView {
     
     func add(tagInfo: TagInfo) {
-        //        let x = self.width * tagInfo.point.x
-        //        let y = self.height * tagInfo.point.y
-        //        let tagView = TagView(frame: CGRect(x: x, y: y, width: 14, height: 22))
-        //        self.addSubview(tagView)
-        //        tagView.input.tagInfo.onNext(tagInfo)
+
+//        let tagView = TagView()
+//        tagView.input.createTag.onNext(tagInfo)
+//        addSubview(tagView)
     }
     
     func remove(tagInfo: TagInfo) {
         
     }
     
+    /// 点击左边屏幕, 标签文字在右边..  点击右边屏幕, 标签文字在左边
     /// 点击创建的时候 centerPoint  title  titleCenterPoint  direction  都需要计算出来
-    func createTagInfo(centerPoint: CGPoint, title: String) -> TagInfo {
+    func createTagInfo(centerPoint: CGPoint, title: String) -> TagInfo? {
+
+        let direction: TagDirection = centerPoint.x >= width * 0.5 ? .left : .right
         
-        let titleCenterPoint = CGPoint(x: 0, y: 0)
+        let pointW: CGFloat = 14
+        /// 根据 centerPoint 计算出点的位置
+        let pointX = (width - pointW) * 0.5
+        debugPrint(pointX)
         
-        let tagInfo = TagInfo(centerPoint: centerPoint, title: title, titleCenterPoint: titleCenterPoint, direction: .left)
-        return tagInfo
+        
+        
+//        let lbl = UILabel(text: title)
+//        lbl.font = UIFont(name: "PingFangSC-Medium", size: 12)
+//        lbl.sizeToFit()
+//
+//        /// + 12 是因为文字和左右边框有6个像素
+//        let contentW = lbl.width + 12
+//        let pointSpace: CGFloat = 4
+//        let lineW: CGFloat = 25
+//
+//        var contentCenterX: CGFloat = 0
+//        if direction == .right {
+//            contentCenterX = centerPoint.x + lineW + pointSpace
+//        } else {
+//            contentCenterX = centerPoint.x - lineW - contentW - pointSpace
+//        }
+//
+//        let contentCenterY = centerPoint.y
+//        let contentCenterPoint = CGPoint(x: contentCenterX, y: contentCenterY)
+//        let contentSize = CGSize(width: contentW, height: 22)
+//
+//        let tagInfo = TagInfo(
+//            centerPoint: centerPoint,
+//            title: title,
+//            contentCenterPoint: contentCenterPoint,
+//            direction: direction
+//        )
+
+        return nil
     }
 }
 
@@ -75,7 +109,6 @@ private extension TagImageView {
         
         state
             .subscribe(onNext: { [unowned self] state in
-                
                 self.configureGesture()
             })
             .disposed(by: rx.disposeBag)
@@ -111,14 +144,15 @@ private extension TagImageView {
         tapGesture.rx.event
             .bind(onNext: { [unowned self] gesture in
                 if state == .edit {
-                    debugPrint("编辑状态, 添加手势")
                     let point = gesture.location(in: self)
                     if point.x > 0 &&
                         point.y > 0 &&
                         point.x < self.width &&
                         point.y < self.height
                     {
-                        let tagInfo = self.createTagInfo(centerPoint: point, title: "哈哈哈fdsafsdafsdafsd")
+                        guard let tagInfo = self.createTagInfo(centerPoint: point, title: "哈哈哈fdsafsdafsdafsd哈哈哈fdsafsdafsdafs") else {
+                            return
+                        }
                         self.add(tagInfo: tagInfo)
                     }
                 } else if state == .image {

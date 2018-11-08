@@ -8,12 +8,12 @@
 
 import UIKit
 
+enum TagDirection {
+    case left           /// 文字在左边
+    case right          /// 文字在右边
+}
+
 struct TagInfo {
-    
-    enum TagDirection {
-        case left
-        case right
-    }
     
     /// 小白点的中心点 ( 0 ~ 1 )
     var centerPoint: CGPoint
@@ -22,15 +22,15 @@ struct TagInfo {
     var title: String
     
     /// 标题中心点 ( 0 ~ 1 )
-    var titleCenterPoint: CGPoint
+    var contentCenterPoint: CGPoint
     
     /// 方向
     var direction: TagDirection
     
-    init(centerPoint: CGPoint, title: String, titleCenterPoint: CGPoint, direction: TagDirection) {
+    init(centerPoint: CGPoint, title: String, contentCenterPoint: CGPoint, direction: TagDirection) {
         self.centerPoint = centerPoint
         self.title = title
-        self.titleCenterPoint = titleCenterPoint
+        self.contentCenterPoint = contentCenterPoint
         self.direction = direction
     }
     
