@@ -108,7 +108,8 @@ private extension TagView {
             let rightSpace = superViewW - right
             let contentViewRight = superViewW - pointView.width - 21 - rightSpace
             let contentViewW = (contentViewRight - titleCenterPoint.x) * 2
-            
+            self.left = self.left - 21 - contentViewW
+
             /// 设置自己的宽度
             width = pointView.width + 21 + contentViewW
 
@@ -121,7 +122,6 @@ private extension TagView {
 
             UIView.animate(withDuration: 0.7) {
                 contentView.width = contentViewW
-                self.left = self.left - 21 - contentViewW
             }
         }
         
