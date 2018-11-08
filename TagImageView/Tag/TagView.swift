@@ -12,85 +12,96 @@ import RxCocoa
 import NSObject_Rx
 import SwifterSwift
 
-//protocol TagViewInputs {
-//    
-//    /// tag 信息
-//    var createTag: PublishSubject<TagInfo> { get }
-//}
-//
-//class TagView: UIView {
-//    
-//    var input: TagViewInputs { return self }
-//    let createTag = PublishSubject<TagInfo>()
-//
-//    private var tagInfo: TagInfo?
-//    
-//    /// 白点
-//    private var pointCenterView = UIView()
-//    /// 白点阴影
-//    private var pointShadowView = UIView()
-//    /// 内容视图, 包括白线
-//    private var contentView = UIView()
-//
-//    override init(frame: CGRect) {
-//        super.init(frame: frame)
-//
-//        configureTagInfo()
-//    }
-//    
-//    required init?(coder aDecoder: NSCoder) {
-//        fatalError("init(coder:) has not been implemented")
-//    }
-//}
-//
-//extension TagView: TagViewInputs {}
-//
-//private extension TagView {
-//    
-//    func createTag(tagInfo: TagInfo) {
-//        
-//        self.tagInfo = tagInfo
-//        
-//        /// 先初始化自己的位置
-//        backgroundColor = .red
-//        height = 22
-//        width = 14
-//        center = tagInfo.centerPoint
-//        
-//        /// 确定整体框的大小
+protocol TagViewInputs {
+    
+    /// tag 信息
+    var createTag: PublishSubject<TagInfo> { get }
+}
+
+class TagView: UIView {
+    
+    var input: TagViewInputs { return self }
+    let createTag = PublishSubject<TagInfo>()
+
+    private var tagInfo: TagInfo?
+    
+    /// 白点
+    private var pointCenterView = UIView()
+    /// 白点阴影
+    private var pointShadowView = UIView()
+    /// 内容视图, 包括白线
+    private var contentView = UIView()
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+
+        configureTagInfo()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+extension TagView: TagViewInputs {}
+
+private extension TagView {
+    
+    func createTag(tagInfo: TagInfo) {
+        
+        self.tagInfo = tagInfo
+        
+        guard let superViewW = superview?.width,
+              let superViewH = superview?.height else {
+                return
+        }
+        
+        let pointViewCenter = CGPoint(
+            x: tagInfo.centerPointRatio.x * superViewW,
+            y: tagInfo.centerPointRatio.y * superViewH
+        )
+        
+        /// 先初始化自己的位置
+        backgroundColor = .red
+        height = 22
+        width = 14
+        center = pointViewCenter
+        
+        /// 确定整体框的大小
 //        if tagInfo.direction == .right {
 //            width = pointShadowView.width + tagInfo.contentSize.width
 //        } else {
 //            left = right - tagInfo.contentSize.width
 //            width = pointShadowView.width + tagInfo.contentSize.width
 //        }
-//        
+        
 //        configurePointView(tagInfo: tagInfo)
 //        configureContentView(tagInfo: tagInfo)
-//        
-//        let tapGesture = UITapGestureRecognizer()
-//        tapGesture.rx.event.bind { [unowned self] _ in
-//            debugPrint(1111)
-//            self.superview?.bringSubviewToFront(self)
-//        }.disposed(by: rx.disposeBag)
-//        addGestureRecognizer(tapGesture)
-//    }
-//}
-//
-//private extension TagView {
-//    
-//    func configureTagInfo() {
-//        
-//        backgroundColor = .red
-////        clipsToBounds = true
-//        
-//        createTag
-//            .subscribe(onNext: { [unowned self] info in
-//                self.createTag(tagInfo: info)
-//            })
-//            .disposed(by: rx.disposeBag)
-//    }
-//    
+        
+        let tapGesture = UITapGestureRecognizer()
+        tapGesture.rx.event.bind { [unowned self] _ in
+            debugPrint(1111)
+            self.superview?.bringSubviewToFront(self)
+        }.disposed(by: rx.disposeBag)
+        addGestureRecognizer(tapGesture)
+    }
+}
+
+private extension TagView {
+    
+    func configureTagInfo() {
+        
+        backgroundColor = .red
+//        clipsToBounds = true
+        
+        createTag
+            .subscribe { [unowned self] event in
+                guard let info = event.element else { return }
+                self.createTag(tagInfo: info)
+            }
+            .disposed(by: rx.disposeBag)
+    }
+    
 //    /// 添加没有位置的点
 //    func configurePointView(tagInfo: TagInfo) {
 //        /// 小黑点
@@ -108,7 +119,7 @@ import SwifterSwift
 //        pointCenterView.shadowRadius = 1.5
 //        pointCenterView.shadowOpacity = 0.5
 //        addSubview(pointCenterView)
-//        
+//
 //        if tagInfo.direction == .right {
 //            pointShadowView.frame.origin = CGPoint(x: 0, y: (height - pointShadowView.height) * 0.5)
 //        } else {
@@ -116,16 +127,16 @@ import SwifterSwift
 //        }
 //        pointCenterView.center = pointShadowView.center
 //    }
-//    
+//
 //    func configureContentView(tagInfo: TagInfo) {
 //        let pointSpace: CGFloat = 4
 //
 //        contentView.backgroundColor = .blue
 //        addSubview(contentView)
-//        
+//
 //        contentView.height = tagInfo.contentSize.height
 //        contentView.top = 0
-//        
+//
 //        if tagInfo.direction == .right {
 //            contentView.left = pointCenterView.right
 //            UIView.animate(withDuration: 0.7) {
@@ -139,9 +150,9 @@ import SwifterSwift
 //        }
 //
 //    }
-//    
-//}
-//
+    
+}
+
 
 
 

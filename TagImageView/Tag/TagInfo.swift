@@ -16,21 +16,21 @@ enum TagDirection {
 struct TagInfo {
     
     /// 小白点的中心点 ( 0 ~ 1 )
-    var centerPoint: CGPoint
+    var centerPointRatio: CGPoint
     
     /// 标题
     var title: String
     
     /// 标题中心点 ( 0 ~ 1 )
-    var contentCenterPoint: CGPoint
+    var titleCenterPointRatio: CGPoint
     
     /// 方向
     var direction: TagDirection
     
-    init(centerPoint: CGPoint, title: String, contentCenterPoint: CGPoint, direction: TagDirection) {
-        self.centerPoint = centerPoint
+    init(centerPointRatio: CGPoint, title: String, titleCenterPointRatio: CGPoint, direction: TagDirection) {
+        self.centerPointRatio = centerPointRatio
         self.title = title
-        self.contentCenterPoint = contentCenterPoint
+        self.titleCenterPointRatio = titleCenterPointRatio
         self.direction = direction
     }
     

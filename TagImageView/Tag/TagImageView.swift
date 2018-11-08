@@ -50,9 +50,9 @@ private extension TagImageView {
     
     func add(tagInfo: TagInfo) {
 
-//        let tagView = TagView()
-//        tagView.input.createTag.onNext(tagInfo)
-//        addSubview(tagView)
+        let tagView = TagView()
+        addSubview(tagView)
+        tagView.input.createTag.onNext(tagInfo)
     }
     
     func remove(tagInfo: TagInfo) {
@@ -61,45 +61,69 @@ private extension TagImageView {
     
     /// 点击左边屏幕, 标签文字在右边..  点击右边屏幕, 标签文字在左边
     /// 点击创建的时候 centerPoint  title  titleCenterPoint  direction  都需要计算出来
-    func createTagInfo(centerPoint: CGPoint, title: String) -> TagInfo? {
+    func createTagInfo(point: CGPoint, title: String) -> TagInfo? {
 
-        let direction: TagDirection = centerPoint.x >= width * 0.5 ? .left : .right
+        let direction: TagDirection = point.x >= width * 0.5 ? .left : .right
         
-        let pointW: CGFloat = 14
+        /// 小白点中心点
+        let centerPointRatio = CGPoint(
+            x: point.x / width,
+            y: point.y / height
+        )
+        
+        let pointViewW: CGFloat = 14
+//        let pointViewH: CGFloat = 22
+        
         /// 根据 centerPoint 计算出点的位置
-        let pointX = (width - pointW) * 0.5
-        debugPrint(pointX)
-        
-        
-        
-//        let lbl = UILabel(text: title)
-//        lbl.font = UIFont(name: "PingFangSC-Medium", size: 12)
-//        lbl.sizeToFit()
-//
-//        /// + 12 是因为文字和左右边框有6个像素
-//        let contentW = lbl.width + 12
-//        let pointSpace: CGFloat = 4
-//        let lineW: CGFloat = 25
-//
-//        var contentCenterX: CGFloat = 0
-//        if direction == .right {
-//            contentCenterX = centerPoint.x + lineW + pointSpace
-//        } else {
-//            contentCenterX = centerPoint.x - lineW - contentW - pointSpace
-//        }
-//
-//        let contentCenterY = centerPoint.y
-//        let contentCenterPoint = CGPoint(x: contentCenterX, y: contentCenterY)
-//        let contentSize = CGSize(width: contentW, height: 22)
-//
-//        let tagInfo = TagInfo(
-//            centerPoint: centerPoint,
-//            title: title,
-//            contentCenterPoint: contentCenterPoint,
-//            direction: direction
-//        )
+        let pointViewX = point.x - pointViewW * 0.5
+//        let pointViewY = point.y - pointViewH * 0.5
 
-        return nil
+        /// 21 是线的长度, 其实线的长度是 25, 缩进小黑点里 4 像素
+//        let lineW: CGFloat = 25
+
+        /// 计算 lbl
+        let lbl = UILabel(text: title)
+        lbl.font = UIFont(name: "PingFangSC-Medium", size: 12)
+        lbl.sizeToFit()
+        /// 12 是文本前后都有 6 像素间距
+        let lblW = lbl.width + 12
+//        let lblH: CGFloat = 22
+        let lblX = pointViewX + pointViewW + 21
+        
+        let lblCenterXRatio = (lblX + lblW * 0.5) / width
+        let lblCenterYRatio = point.y / height
+        /// 文本中心点
+        let titleCenterPointRatio = CGPoint(x: lblCenterXRatio, y: lblCenterYRatio)
+
+//        let view = UIView()
+//        view.width = pointViewW
+//        view.height = pointViewH
+//        view.center = CGPoint(x: centerPointRatio.x * width, y: centerPointRatio.y * height)
+//        view.backgroundColor = .blue
+//        addSubview(view)
+//        let lineView = UIView()
+//        lineView.backgroundColor = .black
+//        lineView.left = view.right - 4
+//        lineView.centerY = view.centerY
+//        lineView.width = lineW
+//        lineView.height = 1
+//        addSubview(lineView)
+//        let contentView = UIView()
+//        contentView.backgroundColor = .red
+//        contentView.width = lblW
+//        contentView.height = lblH
+//        let ppp = CGPoint(x: titleCenterPointRatio.x * width, y: titleCenterPointRatio.y * height)
+//        contentView.center = ppp
+//        addSubview(contentView)
+        
+        let tagInfo = TagInfo(
+            centerPointRatio: centerPointRatio,
+            title: title,
+            titleCenterPointRatio: titleCenterPointRatio,
+            direction: direction
+        )
+
+        return tagInfo
     }
 }
 
@@ -150,7 +174,7 @@ private extension TagImageView {
                         point.x < self.width &&
                         point.y < self.height
                     {
-                        guard let tagInfo = self.createTagInfo(centerPoint: point, title: "哈哈哈fdsafsdafsdafsd哈哈哈fdsafsdafsdafs") else {
+                        guard let tagInfo = self.createTagInfo(point: point, title: "哈哈哈fdsafsdafsdafsd哈哈哈fdsafsdafsdafs") else {
                             return
                         }
                         self.add(tagInfo: tagInfo)
