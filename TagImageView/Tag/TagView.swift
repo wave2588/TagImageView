@@ -56,28 +56,80 @@ private extension TagView {
                 return
         }
         
-        let pointViewCenter = CGPoint(
+        let pointViewCenterPoint = CGPoint(
             x: tagInfo.centerPointRatio.x * superViewW,
             y: tagInfo.centerPointRatio.y * superViewH
         )
         
         /// 先初始化自己的位置
-        backgroundColor = .red
         height = 22
         width = 14
-        center = pointViewCenter
+        center = pointViewCenterPoint
         
-        /// 确定整体框的大小
-//        if tagInfo.direction == .right {
-//            width = pointShadowView.width + tagInfo.contentSize.width
-//        } else {
-//            left = right - tagInfo.contentSize.width
-//            width = pointShadowView.width + tagInfo.contentSize.width
-//        }
+        let titleCenterPoint = CGPoint(
+            x: tagInfo.titleCenterPointRatio.x * superViewW,
+            y: tagInfo.titleCenterPointRatio.y * superViewH
+        )
         
-//        configurePointView(tagInfo: tagInfo)
-//        configureContentView(tagInfo: tagInfo)
+        let pointView = UIView()
+        pointView.backgroundColor = .yellow
+        pointView.size = frame.size
+        pointView.frame.origin = CGPoint(x: 0, y: 0)
+        addSubview(pointView)
+
+        let lineView = UIView()
+        lineView.backgroundColor = .black
+        lineView.top = (height - 1) * 0.5
+        lineView.width = 25
+        lineView.height = 1
+        addSubview(lineView)
+
+        let contentView = UIView()
+        contentView.backgroundColor = .blue
+        contentView.top = 0
+        contentView.height = 22
+        addSubview(contentView)
         
+        if tagInfo.direction == .right {
+            
+            lineView.left = width - 4
+            
+            let contentViewLeft = left + pointView.width + 21
+            let contentViewW = (titleCenterPoint.x - contentViewLeft) * 2
+            contentView.left = lineView.right
+            contentView.width = contentViewW
+            
+            UIView.animate(withDuration: 0.7) {
+                /// 设置自己的宽度
+                self.width = pointView.width + 21 + contentViewW
+            }
+        } else {
+            
+            let rightSpace = superViewW - right
+            let contentViewRight = superViewW - pointView.width - 21 - rightSpace
+            let contentViewW = (contentViewRight - titleCenterPoint.x) * 2
+            
+            /// 设置自己的宽度
+            width = pointView.width + 21 + contentViewW
+
+            /// 重新设置 pointView 位置
+            pointView.frame.origin = CGPoint(x: width - pointView.width, y: 0)
+            
+            /// 重新设置 lineView 位置
+            lineView.right = pointView.left
+            contentView.right = 0
+
+            UIView.animate(withDuration: 0.7) {
+                contentView.width = contentViewW
+                self.left = self.left - 21 - contentViewW
+            }
+        }
+        
+        let title = UILabel(text: tagInfo.title)
+        title.font = UIFont(name: "PingFangSC-Medium", size: 12)
+        title.frame = CGRect(x: 6, y: 0, width: contentView.width - 12, height: contentView.height)
+        contentView.addSubview(title)
+
         let tapGesture = UITapGestureRecognizer()
         tapGesture.rx.event.bind { [unowned self] _ in
             debugPrint(1111)
@@ -92,7 +144,7 @@ private extension TagView {
     func configureTagInfo() {
         
         backgroundColor = .red
-//        clipsToBounds = true
+        clipsToBounds = true
         
         createTag
             .subscribe { [unowned self] event in

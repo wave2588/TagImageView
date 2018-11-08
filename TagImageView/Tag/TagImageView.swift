@@ -72,7 +72,7 @@ private extension TagImageView {
         )
         
         let pointViewW: CGFloat = 14
-//        let pointViewH: CGFloat = 22
+        let pointViewH: CGFloat = 22
         
         /// 根据 centerPoint 计算出点的位置
         let pointViewX = point.x - pointViewW * 0.5
@@ -88,26 +88,39 @@ private extension TagImageView {
         /// 12 是文本前后都有 6 像素间距
         let lblW = lbl.width + 12
 //        let lblH: CGFloat = 22
-        let lblX = pointViewX + pointViewW + 21
+
+        var lblX: CGFloat = 0
+        if direction == .right {
+            lblX = pointViewX + pointViewW + 21
+        } else {
+            lblX = pointViewX - 21 - lblW
+        }
         
         let lblCenterXRatio = (lblX + lblW * 0.5) / width
         let lblCenterYRatio = point.y / height
+        
         /// 文本中心点
         let titleCenterPointRatio = CGPoint(x: lblCenterXRatio, y: lblCenterYRatio)
-
+        
 //        let view = UIView()
 //        view.width = pointViewW
 //        view.height = pointViewH
 //        view.center = CGPoint(x: centerPointRatio.x * width, y: centerPointRatio.y * height)
 //        view.backgroundColor = .blue
 //        addSubview(view)
+//
 //        let lineView = UIView()
 //        lineView.backgroundColor = .black
-//        lineView.left = view.right - 4
+//        if direction == .right {
+//            lineView.left = view.right - 4
+//        } else {
+//            lineView.left = view.left - 21
+//        }
 //        lineView.centerY = view.centerY
 //        lineView.width = lineW
 //        lineView.height = 1
 //        addSubview(lineView)
+//
 //        let contentView = UIView()
 //        contentView.backgroundColor = .red
 //        contentView.width = lblW
@@ -174,7 +187,7 @@ private extension TagImageView {
                         point.x < self.width &&
                         point.y < self.height
                     {
-                        guard let tagInfo = self.createTagInfo(point: point, title: "哈哈哈fdsafsdafsdafsd哈哈哈fdsafsdafsdafs") else {
+                        guard let tagInfo = self.createTagInfo(point: point, title: "哈哈哈fdsafsdafsdafsds") else {
                             return
                         }
                         self.add(tagInfo: tagInfo)
