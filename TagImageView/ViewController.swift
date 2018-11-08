@@ -8,6 +8,7 @@
 
 import UIKit
 import RxSwift
+import RxCocoa
 
 class ViewController: UIViewController {
 
@@ -16,13 +17,23 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        let tagInfoOne = TagInfo(
+            centerPoint: CGPoint(x: 0.5, y: 0.5),
+            title: "123321",
+            titleCenterPoint: CGPoint(x: 0.53, y: 0.5),
+            direction: .left
+        )
         
-        let tagInfoOne = TagInfo(point: CGPoint(x: 0.2, y: 0.3), title: "哈哈哈fdsafsdafsdafsd")
-        let tagInfoTwo = TagInfo(point: CGPoint(x: 0.2, y: 0.8), title: "哈哈哈")
+        let infos = [tagInfoOne]
+        tagImageView.inputs.state.accept(.edit)
+        tagImageView.inputs.addTagInfos.accept(infos)
         
-        let infos = [tagInfoOne, tagInfoTwo]
+        let tap = UITapGestureRecognizer()
+        tap.rx.event.bind { _ in
+            debugPrint("我是底部的view 哈哈哈哈")
+        }.disposed(by: rx.disposeBag)
+        view.addGestureRecognizer(tap)
         
-        tagImageView.inputs.tagInfos.onNext(infos)
     }
 
 
