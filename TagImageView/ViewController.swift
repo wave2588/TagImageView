@@ -17,16 +17,30 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-//        let tagInfoOne = TagInfo(
-//            centerPoint: CGPoint(x: 0.5, y: 0.5),
-//            title: "123321",
-//            contentPoint: CGPoint(x: 0.53, y: 0.5),
-//            direction: .left
-//        )
-//        
-//        let infos = [tagInfoOne]
+        let one = TagInfo(
+            centerPointRatio: CGPoint(x: 0.1056338028169014, y: 0.4686411149825784),
+            title: "哈哈哈fdsafsdafsdafsds",
+            titleCenterPointRatio: CGPoint(x: 0.3908450704225352, y: 0.4686411149825784),
+            direction: .right
+        )
+        
+        let two = TagInfo(
+            centerPointRatio: CGPoint(x: 0.07464788732394366, y: 0.8519163763066202),
+            title: "哈哈哈fdsafsdafsdafsds",
+            titleCenterPointRatio: CGPoint(x: 0.3598591549295775, y: 0.8519163763066202),
+            direction: .right
+        )
+
+        let three = TagInfo(
+            centerPointRatio: CGPoint(x: 0.8929577464788733, y: 0.6672473867595818),
+            title: "哈哈哈fdsafsdafsdafsds",
+            titleCenterPointRatio: CGPoint(x: 0.6077464788732394, y: 0.6672473867595818),
+            direction: .left
+        )
+        
+        let infos = [one, two, three]
         tagImageView.inputs.state.accept(.edit)
-//        tagImageView.inputs.addTagInfos.accept(infos)
+        tagImageView.inputs.addTagInfos.accept(infos)
         
         let tap = UITapGestureRecognizer()
         tap.rx.event.bind { _ in
