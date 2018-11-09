@@ -56,12 +56,18 @@ class TwoVC: UIViewController {
             }.disposed(by: rx.disposeBag)
         view.addGestureRecognizer(tap)
         
-        
         textField.rx.text
             .subscribe(onNext: { [unowned self] text in
                 self.tagImageView.testTitle = text ?? ""
             })
             .disposed(by: rx.disposeBag)
+        
+        tagImageView.clickTagView
+            .subscribe(onNext: { info in
+                debugPrint("clickTagView", info)
+            })
+            .disposed(by: rx.disposeBag)
+        
     }
     
     @IBAction func change(_ sender: UIButton) {

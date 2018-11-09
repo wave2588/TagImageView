@@ -35,6 +35,9 @@ protocol TagViewOutputs {
     
     /// 更新
     var updateTagInfo: PublishSubject<TagInfo> { get }
+    
+    /// 点击 tag
+    var clickTagView: PublishSubject<TagInfo> { get }
 }
 
 class TagView: UIView {
@@ -47,6 +50,7 @@ class TagView: UIView {
     var output: TagViewOutputs { return self }
     let removeTagInfo = PublishSubject<TagInfo>()
     let updateTagInfo = PublishSubject<TagInfo>()
+    let clickTagView = PublishSubject<TagInfo>()
 
     
     private var tagInfo: TagInfo?
@@ -84,19 +88,19 @@ private extension TagView {
     
     func dragging(gesture: UIPanGestureRecognizer) {
         
-//        guard let superViewW = superview?.width,
-//            let superViewH = superview?.height else {
-//                return
-//        }
+        guard let superViewW = superview?.width,
+            let superViewH = superview?.height else {
+                return
+        }
 
         if gesture.state == .began {
             
             self.superview?.bringSubviewToFront(self)
             
         } else if gesture.state == .changed {
+            
             let point = gesture.location(in: superview)
-            left = point.x
-            top = point.y
+            center = point
             
         } else if gesture.state == .ended || gesture.state == .cancelled || gesture.state == .failed {
             update()
@@ -107,7 +111,18 @@ private extension TagView {
         //                self.remove(tagInfo: tagInfo)
         //                self.removeTagInfo.onNext(tagInfo)
         
-        debugPrint("改变方向")
+        var upTagInfo = tagInfo
+        /// 改变方向... 相当于把 TagImageView 计算的过程重新来一遍....
+        if tagInfo.direction == .right {
+            /// 改到左边
+            
+            
+        } else {
+            /// 改到右边
+            
+        }
+        
+        updateTagInfo.onNext(upTagInfo)
     }
     
     func update() {
@@ -118,8 +133,6 @@ private extension TagView {
                 return
         }
 
-        debugPrint("开始计算, 当前位置--->:  \(frame)")
-        
         var upTagInfo: TagInfo?
         if tagInfo.direction == .right {
             
@@ -276,6 +289,8 @@ private extension TagView {
         
         tapGesture.rx.event
             .bind { [unowned self] gesture in
+                guard let tagInfo = self.tagInfo else { return }
+                self.clickTagView.onNext(tagInfo)
                 self.superview?.bringSubviewToFront(self)
             }
             .disposed(by: rx.disposeBag)

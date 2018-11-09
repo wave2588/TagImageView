@@ -30,13 +30,20 @@ protocol TagImageViewInputs {
     var removeTagInfos: BehaviorRelay<[TagInfo]> { get }
 }
 
+protocol TagImageViewOutputs {
+    
+    var clickTagView: PublishSubject<TagInfo> { get }
+}
+
 class TagImageView: UIImageView {
 
     var inputs: TagImageViewInputs { return self }
-
     let state = BehaviorRelay<State>(value: .normal)
     let addTagInfos = BehaviorRelay<[TagInfo]>(value: ([]))
     let removeTagInfos = BehaviorRelay<[TagInfo]>(value: ([]))
+
+    var outputs: TagImageViewOutputs { return self }
+    let clickTagView = PublishSubject<TagInfo>()
 
     /// test
     var testTitle: String = ""
@@ -49,6 +56,7 @@ class TagImageView: UIImageView {
 }
 
 extension TagImageView: TagImageViewInputs {}
+extension TagImageView: TagImageViewOutputs {}
 
 private extension TagImageView {
     
@@ -101,6 +109,9 @@ private extension TagImageView {
             addSubview(tagView)
             tagView.input.createTag.onNext(tagInfo)
             tagView.input.state.onNext(state.value)
+            tagView.clickTagView
+                .bind(to: clickTagView)
+                .disposed(by: rx.disposeBag)
         }
     }
     
