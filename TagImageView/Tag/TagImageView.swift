@@ -30,22 +30,13 @@ protocol TagImageViewInputs {
     var removeTagInfos: BehaviorRelay<[TagInfo]> { get }
 }
 
-protocol TagImageViewOutputs {
-    
-    /// 输出所有标签
-    var tagInfos: BehaviorRelay<[TagInfo]> { get }
-}
-
 class TagImageView: UIImageView {
 
     var inputs: TagImageViewInputs { return self }
-    var outputs: TagImageViewOutputs { return self }
 
     let state = BehaviorRelay<State>(value: .normal)
     let addTagInfos = BehaviorRelay<[TagInfo]>(value: ([]))
     let removeTagInfos = BehaviorRelay<[TagInfo]>(value: ([]))
-
-    let tagInfos = BehaviorRelay<[TagInfo]>(value: ([]))
 
     /// test
     var testTitle: String = ""
@@ -58,7 +49,6 @@ class TagImageView: UIImageView {
 }
 
 extension TagImageView: TagImageViewInputs {}
-extension TagImageView: TagImageViewOutputs {}
 
 private extension TagImageView {
     

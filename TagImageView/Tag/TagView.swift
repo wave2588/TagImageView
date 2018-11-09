@@ -45,7 +45,8 @@ class TagView: UIView {
     let removeTagInfo = PublishSubject<TagInfo>()
     let updateTagInfo = PublishSubject<TagInfo>()
 
-    var tagInfo: TagInfo?
+    
+    private var tagInfo: TagInfo?
     
     /// 白点
     private var pointCenterView = UIView()
@@ -67,7 +68,6 @@ class TagView: UIView {
 
 extension TagView: TagViewInputs {}
 extension TagView: TagViewOutputs {}
-
 
 private extension TagView {
     
@@ -158,10 +158,21 @@ private extension TagView {
         }
         
         contentView.input.createContent.onNext(tagInfo)
+        
+        configureGesture()
+    }
+}
 
+private extension TagView {
+    
+    func configureGesture() {
+        
         let tapGesture = UITapGestureRecognizer()
         tapGesture.rx.event
-            .bind { [unowned self] _ in
+            .bind { [unowned self] gesture in
+                
+                debugPrint(gesture.location(in: self))
+                
                 debugPrint("点击的 TagView")
                 self.superview?.bringSubviewToFront(self)
             }
@@ -172,15 +183,13 @@ private extension TagView {
         tapGesture.rx.event
             .bind { [unowned self] _ in
                 debugPrint("点击的 pointView")
+                guard let tagInfo = self.tagInfo else { return }
                 self.remove(tagInfo: tagInfo)
                 self.removeTagInfo.onNext(tagInfo)
             }
             .disposed(by: rx.disposeBag)
         pointCenterView.addGestureRecognizer(pointGesture)
     }
-}
-
-private extension TagView {
     
     func configureTagInfo() {
         
@@ -197,7 +206,6 @@ private extension TagView {
                 self.remove(tagInfo: tagInfo)
             })
             .disposed(by: rx.disposeBag)
-        
     }
     
     /// 添加没有位置的点
