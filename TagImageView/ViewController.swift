@@ -58,5 +58,18 @@ class ViewController: UIViewController {
             .disposed(by: rx.disposeBag)
     }
 
-
+    @IBAction func change(_ sender: UIButton) {
+        if sender.titleLabel?.text == "编辑" {
+            tagImageView.inputs.state.accept(.image)
+            sender.setTitle("图片", for: .normal)
+        } else {
+            tagImageView.inputs.state.accept(.edit)
+            sender.setTitle("编辑", for: .normal)
+        }
+    }
+    
+    @IBAction func printTag(_ sender: UIButton) {
+        let infos = tagImageView.outputs.tagInfos.value
+        debugPrint(infos)
+    }
 }

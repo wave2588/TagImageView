@@ -28,13 +28,23 @@ protocol TagImageViewInputs {
     var addTagInfos: BehaviorRelay<[TagInfo]> { get }
 }
 
+protocol TagImageViewOutputs {
+    
+    /// 输出所有标签
+    var tagInfos: BehaviorRelay<[TagInfo]> { get }
+}
+
 class TagImageView: UIImageView {
 
     var inputs: TagImageViewInputs { return self }
+    var outputs: TagImageViewOutputs { return self }
+
     let state = BehaviorRelay<State>(value: .normal)
     let addTagInfos = BehaviorRelay<[TagInfo]>(value: ([]))
+    
+    let tagInfos = BehaviorRelay<[TagInfo]>(value: ([]))
 
-    var tagViews = [TagView]()
+    private var tagViews = [TagView]()
     
     var testTitle: String = ""
     
@@ -46,6 +56,7 @@ class TagImageView: UIImageView {
 }
 
 extension TagImageView: TagImageViewInputs {}
+extension TagImageView: TagImageViewOutputs {}
 
 private extension TagImageView {
     
@@ -106,15 +117,15 @@ private extension TagImageView {
         }
         
         /// 所以, 在这里就要控制好, 看是否超出了屏幕
-        if direction == .right {
-            if lblX + lblW >= width {
-                debugPrint("超出了")
-            } else {
-                debugPrint("没有超出")
-            }
-        } else {
-            
-        }
+//        if direction == .right {
+//            if lblX + lblW >= width {
+//                debugPrint("超出了")
+//            } else {
+//                debugPrint("没有超出")
+//            }
+//        } else {
+//
+//        }
         
         let lblCenterXRatio = (lblX + lblW * 0.5) / width
         let lblCenterYRatio = point.y / height
@@ -173,6 +184,7 @@ private extension TagImageView {
                         guard let tagInfo = self.createTagInfo(point: point, title: self.testTitle) else {
                             return
                         }
+                        
                         self.add(tagInfos: [tagInfo])
                     }
                 } else if state == .image {
