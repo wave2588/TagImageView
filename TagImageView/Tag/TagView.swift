@@ -55,7 +55,7 @@ private extension TagView {
 
         self.superview?.bringSubviewToFront(self)
         
-        UIView.animate(withDuration: 0.7, animations: {
+        UIView.animate(withDuration: 0.4, animations: {
             if tagInfo.direction == .right {
                 self.contentView.width = 0
             } else {
@@ -109,7 +109,7 @@ private extension TagView {
             contentView.left = pointCenterView.right
             contentView.width = contentViewW
             
-            UIView.animate(withDuration: 0.7) {
+            UIView.animate(withDuration: 0.4) {
                 /// 设置自己的宽度, - 4 是因为有4个像素缩进 pointView 里边, 线和点要链接在一起
                 self.width = self.pointShadowView.width + contentViewW - 4
             }
@@ -129,7 +129,7 @@ private extension TagView {
 
             self.contentView.right = self.pointCenterView.left
             
-            UIView.animate(withDuration: 0.7) {
+            UIView.animate(withDuration: 0.4) {
                 self.contentView.width = contentViewW
                 self.contentView.left = 0
             }

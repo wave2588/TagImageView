@@ -41,7 +41,7 @@ class ViewController: UIViewController {
         )
         
         let infos = [one, two, three]
-        tagImageView.inputs.state.accept(.image)
+        tagImageView.inputs.state.accept(.edit)
         tagImageView.inputs.addTagInfos.accept(infos)
         
         let tap = UITapGestureRecognizer()
