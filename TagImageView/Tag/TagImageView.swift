@@ -87,8 +87,15 @@ private extension TagImageView {
                 .disposed(by: rx.disposeBag)
             
             tagView.output
-                .updateTagInfo.subscribe(onNext: { info in
-                    
+                .updateTagInfo.subscribe(onNext: { [unowned self] updateTagInfo in
+                    var infos = self.addTagInfos.value
+                    guard let index = infos.firstIndex(where: { tempInfo -> Bool in
+                        return tempInfo.tagID == updateTagInfo.tagID
+                    }) else {
+                        return
+                    }
+                    infos[index] = updateTagInfo
+                    self.addTagInfos.accept(infos)
                 })
                 .disposed(by: rx.disposeBag)
             addSubview(tagView)

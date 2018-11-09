@@ -84,26 +84,22 @@ private extension TagView {
     
     func dragging(gesture: UIPanGestureRecognizer) {
         
-        guard let superViewW = superview?.width,
-            let superViewH = superview?.height else {
-                return
-        }
+//        guard let superViewW = superview?.width,
+//            let superViewH = superview?.height else {
+//                return
+//        }
 
         if gesture.state == .began {
             
+            self.superview?.bringSubviewToFront(self)
+            
         } else if gesture.state == .changed {
             let point = gesture.location(in: superview)
-            debugPrint(point)
-            if point.x < 0 || point.y < 0 || point.x > superViewW || point.y > superViewH {
-                return
-            }
             left = point.x
             top = point.y
             
         } else if gesture.state == .ended || gesture.state == .cancelled || gesture.state == .failed {
-            debugPrint("stop")
-            /// 重新计算 tagInfo
-            
+            update()
         }
     }
     
@@ -112,6 +108,74 @@ private extension TagView {
         //                self.removeTagInfo.onNext(tagInfo)
         
         debugPrint("改变方向")
+    }
+    
+    func update() {
+        
+        guard let superViewW = superview?.width,
+              let superViewH = superview?.height,
+              let tagInfo = self.tagInfo else {
+                return
+        }
+
+        debugPrint("开始计算, 当前位置--->:  \(frame)")
+        
+        var upTagInfo: TagInfo?
+        if tagInfo.direction == .right {
+            
+            /// 计算 point center 位置
+            let pointCenterX = left + pointShadowView.width * 0.5
+            let pointCenterY = centerY
+            let centerPointRatio = CGPoint(
+                x: pointCenterX / superViewW,
+                y: pointCenterY / superViewH
+            )
+            
+            /// 计算 title center 位置
+            let titleW = width - pointShadowView.width - 21
+            let titleCenterX = left + pointShadowView.width + 21 + titleW * 0.5
+            let titleCenterY = centerY
+            let titleCenterPointRatio = CGPoint(
+                x: titleCenterX / superViewW,
+                y: titleCenterY / superViewH
+            )
+            
+            upTagInfo = TagInfo(
+                tagID: tagInfo.tagID,
+                centerPointRatio: centerPointRatio,
+                title: tagInfo.title,
+                titleCenterPointRatio: titleCenterPointRatio,
+                direction: tagInfo.direction
+            )
+        } else {
+            
+            /// 计算 point center 位置
+            let pointCenterX = right - pointShadowView.width * 0.5
+            let pointCenterY = centerY
+            let centerPointRatio = CGPoint(
+                x: pointCenterX / superViewW,
+                y: pointCenterY / superViewH
+            )
+            
+            /// 计算 title center 位置
+            let titleW = width - pointShadowView.width - 21
+            let titleCenterX = left + titleW * 0.5
+            let titleCenterY = centerY
+            let titleCenterPointRatio = CGPoint(
+                x: titleCenterX / superViewW,
+                y: titleCenterY / superViewH
+            )
+
+            upTagInfo = TagInfo(
+                tagID: tagInfo.tagID,
+                centerPointRatio: centerPointRatio,
+                title: tagInfo.title,
+                titleCenterPointRatio: titleCenterPointRatio,
+                direction: tagInfo.direction
+            )
+        }
+        guard let info = upTagInfo else { return }
+        updateTagInfo.onNext(info)
     }
     
     func remove(tagInfo: TagInfo) {
@@ -201,7 +265,7 @@ private extension TagView {
         }
         
         contentView.input.createContent.onNext(tagInfo)
-        
+
         configureGesture()
     }
 }
@@ -242,8 +306,7 @@ private extension TagView {
                     
                     self.pointShadowView.addGestureRecognizer(self.pointGesture)
                     self.addGestureRecognizer(self.panGesture)
-                    
-                    self.removeGestureRecognizer(self.tapGesture)
+                    self.addGestureRecognizer(self.tapGesture)
                 } else {
                     
                     self.addGestureRecognizer(self.tapGesture)
