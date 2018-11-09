@@ -19,6 +19,8 @@ import SwifterSwift
 
 protocol TagViewInputs {
     
+    var state: PublishSubject<State> { get }
+    
     /// 添加 tag 信息
     var createTag: PublishSubject<TagInfo> { get }
     
@@ -38,6 +40,7 @@ protocol TagViewOutputs {
 class TagView: UIView {
     
     var input: TagViewInputs { return self }
+    let state = PublishSubject<State>()
     let createTag = PublishSubject<TagInfo>()
     let removeTag = PublishSubject<TagInfo>()
 
@@ -54,6 +57,14 @@ class TagView: UIView {
     private var pointShadowView = UIView()
     /// 内容视图, 包括白线
     private var contentView = TagContentView()
+    
+    /// 点击标签
+    private let tapGesture = UITapGestureRecognizer()
+    /// 点击小红点
+    private let pointGesture = UITapGestureRecognizer()
+    /// 拖动
+    private let panGesture = UIPanGestureRecognizer()
+
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -73,17 +84,25 @@ private extension TagView {
     
     func dragging(gesture: UIPanGestureRecognizer) {
         
-        let point = gesture.location(in: self)
-        debugPrint(point)
-//        self.center = point
-        left = point.x
-        top = point.y
-        
+        guard let superViewW = superview?.width,
+            let superViewH = superview?.height else {
+                return
+        }
+
         if gesture.state == .began {
             
         } else if gesture.state == .changed {
+            let point = gesture.location(in: superview)
+            debugPrint(point)
+            if point.x < 0 || point.y < 0 || point.x > superViewW || point.y > superViewH {
+                return
+            }
+            left = point.x
+            top = point.y
             
         } else if gesture.state == .ended || gesture.state == .cancelled || gesture.state == .failed {
+            debugPrint("stop")
+            /// 重新计算 tagInfo
             
         }
     }
@@ -191,39 +210,52 @@ private extension TagView {
     
     func configureGesture() {
         
-        let tapGesture = UITapGestureRecognizer()
         tapGesture.rx.event
             .bind { [unowned self] gesture in
                 self.superview?.bringSubviewToFront(self)
             }
             .disposed(by: rx.disposeBag)
-        addGestureRecognizer(tapGesture)
         
-        /// 点击小红点切换方向
-        let pointGesture = UITapGestureRecognizer()
         pointGesture.rx.event
             .bind { [unowned self] _ in
                 guard let tagInfo = self.tagInfo else { return }
                 self.changeDirection(tagInfo: tagInfo)
             }
             .disposed(by: rx.disposeBag)
-        pointShadowView.addGestureRecognizer(pointGesture)
         
-        let panGesture = UIPanGestureRecognizer()
         panGesture.rx.event
             .bind { [unowned self] gesture in
                 self.dragging(gesture: gesture)
             }
             .disposed(by: rx.disposeBag)
-        addGestureRecognizer(panGesture)
     }
     
     func configureTagInfo() {
         
         clipsToBounds = true
         
+        state
+            .subscribe { [unowned self] event in
+                
+                guard let state = event.element else { return }
+                if state == .edit {
+                    
+                    self.pointShadowView.addGestureRecognizer(self.pointGesture)
+                    self.addGestureRecognizer(self.panGesture)
+                    
+                    self.removeGestureRecognizer(self.tapGesture)
+                } else {
+                    
+                    self.addGestureRecognizer(self.tapGesture)
+                    
+                    self.pointShadowView.removeGestureRecognizer(self.pointGesture)
+                    self.removeGestureRecognizer(self.panGesture)
+                }
+            }
+            .disposed(by: rx.disposeBag)
+        
         createTag
-            .subscribe(onNext: { tagInfo in
+            .subscribe(onNext: { [unowned self] tagInfo in
                 self.create(tagInfo: tagInfo)
             })
             .disposed(by: rx.disposeBag)

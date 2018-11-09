@@ -63,7 +63,9 @@ private extension TagImageView {
         }
 
         if tagViews.count == 0 {
+            
             let tagView = TagView()
+            
             tagView.output
                 .removeTagInfo.subscribe(onNext: { [unowned self] info in
                     
@@ -91,6 +93,7 @@ private extension TagImageView {
                 .disposed(by: rx.disposeBag)
             addSubview(tagView)
             tagView.input.createTag.onNext(tagInfo)
+            tagView.input.state.onNext(state.value)
         }
     }
     
@@ -250,6 +253,14 @@ private extension TagImageView {
                 }
             })
             .disposed(by: rx.disposeBag)
+        
+        
+        /// 测试代码, 实际情况下不会出现
+        subviews.forEach { view in
+            if let tagView = view as? TagView {
+                tagView.input.state.onNext(state)
+            }
+        }
     }
     
 }
