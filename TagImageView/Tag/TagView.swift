@@ -30,7 +30,7 @@ class TagView: UIView {
     /// 白点阴影
     private var pointShadowView = UIView()
     /// 内容视图, 包括白线
-    private var contentView = UIView()
+    private var contentView = TagContentView()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -71,64 +71,56 @@ private extension TagView {
             y: tagInfo.titleCenterPointRatio.y * superViewH
         )
         
-        let pointView = UIView()
-        pointView.backgroundColor = .yellow
-        pointView.size = frame.size
-        pointView.frame.origin = CGPoint(x: 0, y: 0)
-        addSubview(pointView)
-
-        let lineView = UIView()
-        lineView.backgroundColor = .black
-        lineView.top = (height - 1) * 0.5
-        lineView.width = 25
-        lineView.height = 1
-        addSubview(lineView)
-
-        let contentView = UIView()
-        contentView.backgroundColor = .blue
+//        let pointView = UIView()
+//        pointView.backgroundColor = .yellow
+//        pointView.size = frame.size
+//        pointView.frame.origin = CGPoint(x: 0, y: 0)
+//        addSubview(pointView)
+        
+        /// 确定点
+        configurePointView()
+        pointShadowView.top = (height - pointShadowView.width) * 0.5
+        pointShadowView.left = 0
+        pointCenterView.center = pointShadowView.center
+        
         contentView.top = 0
         contentView.height = 22
         addSubview(contentView)
         
         if tagInfo.direction == .right {
             
-            lineView.left = width - 4
-            
-            let contentViewLeft = left + pointView.width + 21
-            let contentViewW = (titleCenterPoint.x - contentViewLeft) * 2
-            contentView.left = lineView.right
+            let contentViewLeft = left + pointShadowView.width + 21
+            /// contentViewW = 线的宽度 + titleCenterPoint
+            let contentViewW = (titleCenterPoint.x - contentViewLeft) * 2 + 25
+            contentView.left = pointCenterView.right
             contentView.width = contentViewW
             
             UIView.animate(withDuration: 0.7) {
-                /// 设置自己的宽度
-                self.width = pointView.width + 21 + contentViewW
+                /// 设置自己的宽度, - 4 是因为有4个像素缩进 pointView 里边, 线和点要链接在一起
+                self.width = self.pointShadowView.width + contentViewW - 4
             }
         } else {
             
             let rightSpace = superViewW - right
-            let contentViewRight = superViewW - pointView.width - 21 - rightSpace
-            let contentViewW = (contentViewRight - titleCenterPoint.x) * 2
-            self.left = self.left - 21 - contentViewW
+            let contentViewRight = superViewW - pointShadowView.width - 21 - rightSpace
+            let contentViewW = (contentViewRight - titleCenterPoint.x) * 2 + 25
+            left = left - contentViewW + 4
 
-            /// 设置自己的宽度
-            width = pointView.width + 21 + contentViewW
+            /// 设置自己的宽度, - 4 是因为有4个像素缩进 pointView 里边, 线和点要链接在一起
+            width = pointShadowView.width + contentViewW - 4
 
             /// 重新设置 pointView 位置
-            pointView.frame.origin = CGPoint(x: width - pointView.width, y: 0)
-            
-            /// 重新设置 lineView 位置
-            lineView.right = pointView.left
+            pointShadowView.left = width - pointShadowView.width
+            pointCenterView.center = pointShadowView.center
+
             contentView.right = 0
 
             UIView.animate(withDuration: 0.7) {
-                contentView.width = contentViewW
+                self.contentView.width = contentViewW
             }
         }
         
-        let title = UILabel(text: tagInfo.title)
-        title.font = UIFont(name: "PingFangSC-Medium", size: 12)
-        title.frame = CGRect(x: 6, y: 0, width: contentView.width - 12, height: contentView.height)
-        contentView.addSubview(title)
+        contentView.input.createContent.onNext(tagInfo)
 
         let tapGesture = UITapGestureRecognizer()
         tapGesture.rx.event.bind { [unowned self] _ in
@@ -143,7 +135,6 @@ private extension TagView {
     
     func configureTagInfo() {
         
-        backgroundColor = .red
         clipsToBounds = true
         
         createTag
@@ -154,31 +145,26 @@ private extension TagView {
             .disposed(by: rx.disposeBag)
     }
     
-//    /// 添加没有位置的点
-//    func configurePointView(tagInfo: TagInfo) {
-//        /// 小黑点
-//        pointShadowView.size = CGSize(width: 14, height: 14)
-//        pointShadowView.cornerRadius = 7
-//        pointShadowView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
-//        addSubview(pointShadowView)
-//
-//        /// 小白点
-//        pointCenterView.size = CGSize(width: 6, height: 6)
-//        pointCenterView.cornerRadius = 3
-//        pointCenterView.backgroundColor = .white
-//        pointCenterView.shadowOffset = CGSize(width: 0, height: 1)
-//        pointCenterView.shadowColor = .black
-//        pointCenterView.shadowRadius = 1.5
-//        pointCenterView.shadowOpacity = 0.5
-//        addSubview(pointCenterView)
-//
-//        if tagInfo.direction == .right {
-//            pointShadowView.frame.origin = CGPoint(x: 0, y: (height - pointShadowView.height) * 0.5)
-//        } else {
-//            pointShadowView.frame.origin = CGPoint(x: width - pointShadowView.width, y: (height - pointShadowView.height) * 0.5)
-//        }
-//        pointCenterView.center = pointShadowView.center
-//    }
+    /// 添加没有位置的点
+    func configurePointView() {
+        /// 小黑点
+        pointShadowView.size = CGSize(width: 14, height: 14)
+        pointShadowView.cornerRadius = 7
+        pointShadowView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+        addSubview(pointShadowView)
+
+        /// 小白点
+        pointCenterView.size = CGSize(width: 6, height: 6)
+        pointCenterView.cornerRadius = 3
+        pointCenterView.backgroundColor = .white
+        pointCenterView.shadowOffset = CGSize(width: 0, height: 1)
+        pointCenterView.shadowColor = .black
+        pointCenterView.shadowRadius = 1.5
+        pointCenterView.shadowOpacity = 0.5
+        addSubview(pointCenterView)
+
+        pointCenterView.center = pointShadowView.center
+    }
 //
 //    func configureContentView(tagInfo: TagInfo) {
 //        let pointSpace: CGFloat = 4
