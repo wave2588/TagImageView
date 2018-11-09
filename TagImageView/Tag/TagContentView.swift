@@ -31,7 +31,6 @@ class TagContentView: UIView {
         super.init(frame: frame)
         
         configureCreateContent()
-        
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -65,6 +64,7 @@ private extension TagContentView {
         titleLbl.font = UIFont(name: "PingFangSC-Medium", size: 12)
         titleLbl.frame = CGRect(x: 6, y: 0, width: backView.width - 12, height: backView.height)
         titleLbl.textColor = .white
+        titleLbl.lineBreakMode = .byTruncatingTail
         backView.addSubview(titleLbl)
         
         if info.direction == .right {
@@ -80,6 +80,8 @@ private extension TagContentView {
 private extension TagContentView {
     
     func configureCreateContent() {
+        
+        clipsToBounds = true
         
         createContent
             .subscribe(onNext: { [unowned self] info in

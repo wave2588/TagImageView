@@ -26,8 +26,6 @@ protocol TagImageViewInputs {
     var state: BehaviorRelay<State> { get }
     /// 添加标签, 并且进行模式设置
     var addTagInfos: BehaviorRelay<[TagInfo]> { get }
-    /// 删除标签
-    var removeTagInfos: BehaviorRelay<[TagInfo]> { get }
 }
 
 class TagImageView: UIImageView {
@@ -35,8 +33,11 @@ class TagImageView: UIImageView {
     var inputs: TagImageViewInputs { return self }
     let state = BehaviorRelay<State>(value: .normal)
     let addTagInfos = BehaviorRelay<[TagInfo]>(value: ([]))
-    let removeTagInfos = BehaviorRelay<[TagInfo]>(value: [])
 
+    var tagViews = [TagView]()
+    
+    var testTitle: String = ""
+    
     override func awakeFromNib() {
         super.awakeFromNib()
 
@@ -48,15 +49,23 @@ extension TagImageView: TagImageViewInputs {}
 
 private extension TagImageView {
     
-    func add(tagInfo: TagInfo) {
+    func add(tagInfos: [TagInfo]) {
 
-        let tagView = TagView()
-        addSubview(tagView)
-        tagView.input.createTag.onNext(tagInfo)
+        tagInfos.forEach { [unowned self] tagInfo in
+            let tagView = TagView()
+            self.addSubview(tagView)
+            tagView.input.createTag.onNext(tagInfo)
+            self.tagViews.append(tagView)
+        }
     }
     
-    func remove(tagInfo: TagInfo) {
-        
+    func remove() {
+        tagViews.forEach { tagView in
+            if let tagInfo = tagView.tagInfo {
+                tagView.input.removeTag.onNext(tagInfo)
+            }
+        }
+        tagViews = []
     }
     
     /// 点击左边屏幕, 标签文字在右边..  点击右边屏幕, 标签文字在左边
@@ -96,38 +105,22 @@ private extension TagImageView {
             lblX = pointViewX - 21 - lblW
         }
         
+        /// 所以, 在这里就要控制好, 看是否超出了屏幕
+        if direction == .right {
+            if lblX + lblW >= width {
+                debugPrint("超出了")
+            } else {
+                debugPrint("没有超出")
+            }
+        } else {
+            
+        }
+        
         let lblCenterXRatio = (lblX + lblW * 0.5) / width
         let lblCenterYRatio = point.y / height
         
         /// 文本中心点
         let titleCenterPointRatio = CGPoint(x: lblCenterXRatio, y: lblCenterYRatio)
-        
-//        let view = UIView()
-//        view.width = pointViewW
-//        view.height = pointViewH
-//        view.center = CGPoint(x: centerPointRatio.x * width, y: centerPointRatio.y * height)
-//        view.backgroundColor = .blue
-//        addSubview(view)
-//
-//        let lineView = UIView()
-//        lineView.backgroundColor = .black
-//        if direction == .right {
-//            lineView.left = view.right - 4
-//        } else {
-//            lineView.left = view.left - 21
-//        }
-//        lineView.centerY = view.centerY
-//        lineView.width = lineW
-//        lineView.height = 1
-//        addSubview(lineView)
-//
-//        let contentView = UIView()
-//        contentView.backgroundColor = .red
-//        contentView.width = lblW
-//        contentView.height = lblH
-//        let ppp = CGPoint(x: titleCenterPointRatio.x * width, y: titleCenterPointRatio.y * height)
-//        contentView.center = ppp
-//        addSubview(contentView)
         
         let tagInfo = TagInfo(
             centerPointRatio: centerPointRatio,
@@ -152,17 +145,7 @@ private extension TagImageView {
         
         addTagInfos
             .subscribe(onNext: { infos in
-                infos.forEach({ [unowned self] info in
-                    self.add(tagInfo: info)
-                })
-            })
-            .disposed(by: rx.disposeBag)
-        
-        removeTagInfos
-            .subscribe(onNext: { infos in
-                infos.forEach({ [unowned self] info in
-                    self.remove(tagInfo: info)
-                })
+                self.add(tagInfos: infos)
             })
             .disposed(by: rx.disposeBag)
     }
@@ -187,13 +170,19 @@ private extension TagImageView {
                         point.x < self.width &&
                         point.y < self.height
                     {
-                        guard let tagInfo = self.createTagInfo(point: point, title: "哈哈哈fdsafsdafsdafsds") else {
+                        guard let tagInfo = self.createTagInfo(point: point, title: self.testTitle) else {
                             return
                         }
-                        self.add(tagInfo: tagInfo)
+                        self.add(tagInfos: [tagInfo])
                     }
                 } else if state == .image {
-                    debugPrint("展示 或 隐藏 全部标签")
+                    
+                    let tagInfos = self.addTagInfos.value
+                    if self.tagViews.count == 0 {
+                        self.add(tagInfos: tagInfos)
+                    } else {
+                        self.remove()
+                    }
                 }
             })
             .disposed(by: rx.disposeBag)

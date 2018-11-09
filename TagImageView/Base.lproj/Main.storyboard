@@ -21,6 +21,13 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="test" translatesAutoresizingMaskIntoConstraints="NO" id="5ep-hA-ufi" customClass="TagImageView" customModule="TagImageView" customModuleProvider="target">
                                 <rect key="frame" x="10" y="100" width="355" height="287"/>
                             </imageView>
+                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="测试问发送到金坷垃" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="nfV-GN-AHC">
+                                <rect key="frame" x="16" y="449" width="343" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
                         </subviews>
                         <color key="backgroundColor" red="1" green="0.1764705882" blue="0.33333333329999998" alpha="0.69999999999999996" colorSpace="calibratedRGB"/>
                         <constraints>
@@ -33,6 +40,7 @@
                     </view>
                     <connections>
                         <outlet property="tagImageView" destination="5ep-hA-ufi" id="mv0-IR-kGC"/>
+                        <outlet property="textField" destination="nfV-GN-AHC" id="wpn-Ry-fal"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

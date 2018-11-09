@@ -14,22 +14,28 @@ import SwifterSwift
 
 protocol TagViewInputs {
     
-    /// tag 信息
+    /// 添加 tag 信息
     var createTag: PublishSubject<TagInfo> { get }
+    
+    /// 删除 tag 信息
+    var removeTag: PublishSubject<TagInfo> { get }
 }
 
 class TagView: UIView {
     
     var input: TagViewInputs { return self }
     let createTag = PublishSubject<TagInfo>()
+    let removeTag = PublishSubject<TagInfo>()
 
+    var tagInfo: TagInfo?
+    
     /// 白点
     private var pointCenterView = UIView()
     /// 白点阴影
     private var pointShadowView = UIView()
     /// 内容视图, 包括白线
     private var contentView = TagContentView()
-
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
 
@@ -45,12 +51,30 @@ extension TagView: TagViewInputs {}
 
 private extension TagView {
     
-    func createTag(tagInfo: TagInfo) {
+    func remove(tagInfo: TagInfo) {
+
+        self.superview?.bringSubviewToFront(self)
+        
+        UIView.animate(withDuration: 0.7, animations: {
+            if tagInfo.direction == .right {
+                self.contentView.width = 0
+            } else {
+                self.contentView.left = self.pointCenterView.left
+                self.contentView.width = 0
+            }
+        }) { _ in
+            self.removeFromSuperview()
+        }
+    }
+    
+    func create(tagInfo: TagInfo) {
         
         guard let superViewW = superview?.width,
               let superViewH = superview?.height else {
                 return
         }
+        
+        self.tagInfo = tagInfo
         
         let pointViewCenterPoint = CGPoint(
             x: tagInfo.centerPointRatio.x * superViewW,
@@ -121,6 +145,14 @@ private extension TagView {
             }
             .disposed(by: rx.disposeBag)
         addGestureRecognizer(tapGesture)
+        
+        let pointGesture = UITapGestureRecognizer()
+        tapGesture.rx.event
+            .bind { [unowned self] _ in
+                self.remove(tagInfo: tagInfo)
+            }
+            .disposed(by: rx.disposeBag)
+        pointShadowView.addGestureRecognizer(pointGesture)
     }
 }
 
@@ -131,11 +163,17 @@ private extension TagView {
         clipsToBounds = true
         
         createTag
-            .subscribe { [unowned self] event in
-                guard let info = event.element else { return }
-                self.createTag(tagInfo: info)
-            }
+            .subscribe(onNext: { tagInfo in
+                self.create(tagInfo: tagInfo)
+            })
             .disposed(by: rx.disposeBag)
+        
+        removeTag
+            .subscribe(onNext: { [unowned self] tagInfo in
+                self.remove(tagInfo: tagInfo)
+            })
+            .disposed(by: rx.disposeBag)
+        
     }
     
     /// 添加没有位置的点

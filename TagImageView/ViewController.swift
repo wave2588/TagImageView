@@ -14,6 +14,8 @@ class ViewController: UIViewController {
 
     @IBOutlet weak var tagImageView: TagImageView!
     
+    @IBOutlet weak var textField: UITextField!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -39,7 +41,7 @@ class ViewController: UIViewController {
         )
         
         let infos = [one, two, three]
-        tagImageView.inputs.state.accept(.edit)
+        tagImageView.inputs.state.accept(.image)
         tagImageView.inputs.addTagInfos.accept(infos)
         
         let tap = UITapGestureRecognizer()
@@ -48,6 +50,12 @@ class ViewController: UIViewController {
         }.disposed(by: rx.disposeBag)
         view.addGestureRecognizer(tap)
         
+        
+        textField.rx.text
+            .subscribe(onNext: { [unowned self] text in
+                self.tagImageView.testTitle = text ?? ""
+            })
+            .disposed(by: rx.disposeBag)
     }
 
 
