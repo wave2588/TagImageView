@@ -10,67 +10,6 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--TwoVC-->
-        <scene sceneID="tne-QT-ifu">
-            <objects>
-                <viewController storyboardIdentifier="TwoVC" id="BYZ-38-t0r" customClass="TwoVC" customModule="TagImageView" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="test" translatesAutoresizingMaskIntoConstraints="NO" id="5ep-hA-ufi" customClass="TagImageView" customModule="TagImageView" customModuleProvider="target">
-                                <rect key="frame" x="10" y="100" width="355" height="287"/>
-                            </imageView>
-                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="测试问发送到金坷垃" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="nfV-GN-AHC">
-                                <rect key="frame" x="16" y="449" width="343" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <nil key="textColor"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <button opaque="NO" tag="1" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rgS-uW-leI">
-                                <rect key="frame" x="40" y="523" width="31" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="编辑"/>
-                                <connections>
-                                    <action selector="change:" destination="BYZ-38-t0r" eventType="touchUpInside" id="OJI-fU-Xax"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HZu-zY-2qP">
-                                <rect key="frame" x="23" y="601" width="37" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="close"/>
-                                <connections>
-                                    <action selector="close:" destination="BYZ-38-t0r" eventType="touchUpInside" id="unQ-fw-y6L"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SQd-K5-ho1">
-                                <rect key="frame" x="98" y="523" width="56" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="输出Tag"/>
-                                <connections>
-                                    <action selector="printTag:" destination="BYZ-38-t0r" eventType="touchUpInside" id="USX-rl-FT1"/>
-                                </connections>
-                            </button>
-                        </subviews>
-                        <color key="backgroundColor" red="1" green="0.1764705882" blue="0.33333333329999998" alpha="0.69999999999999996" colorSpace="calibratedRGB"/>
-                        <constraints>
-                            <constraint firstItem="5ep-hA-ufi" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="80" id="GyO-ab-Et3"/>
-                            <constraint firstItem="5ep-hA-ufi" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="10" id="OT3-Ks-L0m"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="5ep-hA-ufi" secondAttribute="trailing" constant="10" id="Y6s-0f-EkA"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="5ep-hA-ufi" secondAttribute="bottom" constant="280" id="th3-3N-E6m"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                    </view>
-                    <connections>
-                        <outlet property="tagImageView" destination="5ep-hA-ufi" id="Emz-4g-3S9"/>
-                        <outlet property="textField" destination="nfV-GN-AHC" id="2FW-QT-vFo"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-582" y="140"/>
-        </scene>
         <!--View Controller-->
         <scene sceneID="OZr-UW-Oyt">
             <objects>
@@ -87,7 +26,4 @@
             <point key="canvasLocation" x="266" y="140"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="test" width="2560" height="1600"/>
-    </resources>
 </document>

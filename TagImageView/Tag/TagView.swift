@@ -170,25 +170,20 @@ private extension TagView {
         let tapGesture = UITapGestureRecognizer()
         tapGesture.rx.event
             .bind { [unowned self] gesture in
-                
-                debugPrint(gesture.location(in: self))
-                
-                debugPrint("点击的 TagView")
                 self.superview?.bringSubviewToFront(self)
             }
             .disposed(by: rx.disposeBag)
         addGestureRecognizer(tapGesture)
         
         let pointGesture = UITapGestureRecognizer()
-        tapGesture.rx.event
+        pointGesture.rx.event
             .bind { [unowned self] _ in
-                debugPrint("点击的 pointView")
                 guard let tagInfo = self.tagInfo else { return }
                 self.remove(tagInfo: tagInfo)
                 self.removeTagInfo.onNext(tagInfo)
             }
             .disposed(by: rx.disposeBag)
-        pointCenterView.addGestureRecognizer(pointGesture)
+        pointShadowView.addGestureRecognizer(pointGesture)
     }
     
     func configureTagInfo() {

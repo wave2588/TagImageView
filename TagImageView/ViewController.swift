@@ -22,7 +22,7 @@ class ViewController: UIViewController {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "TwoVC") as? TwoVC else {
+        guard let vc = UIStoryboard(name: "TwoSb", bundle: nil).instantiateInitialViewController() as? TwoVC else {
             return
         }
         present(vc, animated: true, completion: nil)
