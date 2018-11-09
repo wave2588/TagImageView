@@ -71,6 +71,16 @@ extension TagView: TagViewOutputs {}
 
 private extension TagView {
     
+    func dragging(gesture: UIPanGestureRecognizer) {
+        if gesture.state == .began {
+            
+        } else if gesture.state == .changed {
+            
+        } else if gesture.state == .ended || gesture.state == .cancelled || gesture.state == .failed {
+            
+        }
+    }
+    
     func remove(tagInfo: TagInfo) {
 
         self.superview?.bringSubviewToFront(self)
@@ -175,6 +185,7 @@ private extension TagView {
             .disposed(by: rx.disposeBag)
         addGestureRecognizer(tapGesture)
         
+        /// 点击小红点变换方向, 暂时写成了点击删除
         let pointGesture = UITapGestureRecognizer()
         pointGesture.rx.event
             .bind { [unowned self] _ in
@@ -184,6 +195,14 @@ private extension TagView {
             }
             .disposed(by: rx.disposeBag)
         pointShadowView.addGestureRecognizer(pointGesture)
+        
+        let panGesture = UIPanGestureRecognizer()
+        panGesture.rx.event
+            .bind { [unowned self] gesture in
+                self.dragging(gesture: gesture)
+            }
+            .disposed(by: rx.disposeBag)
+        addGestureRecognizer(panGesture)
     }
     
     func configureTagInfo() {

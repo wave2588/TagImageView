@@ -147,15 +147,15 @@ private extension TagImageView {
         }
         
         /// 所以, 在这里就要控制好, 看是否超出了屏幕
-//        if direction == .right {
-//            if lblX + lblW >= width {
-//                debugPrint("超出了")
-//            } else {
-//                debugPrint("没有超出")
-//            }
-//        } else {
-//
-//        }
+        if direction == .right {
+            if lblX + lblW >= width {
+                debugPrint("超出了")
+            } else {
+                debugPrint("没有超出")
+            }
+        } else {
+
+        }
         
         let lblCenterXRatio = (lblX + lblW * 0.5) / width
         let lblCenterYRatio = point.y / height
