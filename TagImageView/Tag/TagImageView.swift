@@ -136,25 +136,26 @@ private extension TagImageView {
         lbl.font = UIFont(name: "PingFangSC-Medium", size: 12)
         lbl.sizeToFit()
         /// 12 是文本前后都有 6 像素间距
-        let lblW = lbl.width + 12
+        var lblW = lbl.width + 12
 //        let lblH: CGFloat = 22
 
         var lblX: CGFloat = 0
         if direction == .right {
+            
             lblX = pointViewX + pointViewW + 21
-        } else {
-            lblX = pointViewX - 21 - lblW
-        }
-        
-        /// 所以, 在这里就要控制好, 看是否超出了屏幕
-        if direction == .right {
-            if lblX + lblW >= width {
-                debugPrint("超出了")
-            } else {
-                debugPrint("没有超出")
+            
+            if lblX + lblW >= width {       /// 超出屏幕
+                let excess = width - lblX - lblW
+                lblW = lblW + excess
             }
         } else {
-
+            lblX = pointViewX - 21 - lblW
+            
+            if lblX <= 0 {              /// 超出屏幕
+                let excess = lblX
+                lblW = lblW + excess
+                lblX = 0
+            }
         }
         
         let lblCenterXRatio = (lblX + lblW * 0.5) / width
