@@ -23,8 +23,6 @@ class TagView: UIView {
     var input: TagViewInputs { return self }
     let createTag = PublishSubject<TagInfo>()
 
-    private var tagInfo: TagInfo?
-    
     /// 白点
     private var pointCenterView = UIView()
     /// 白点阴影
@@ -48,8 +46,6 @@ extension TagView: TagViewInputs {}
 private extension TagView {
     
     func createTag(tagInfo: TagInfo) {
-        
-        self.tagInfo = tagInfo
         
         guard let superViewW = superview?.width,
               let superViewH = superview?.height else {
@@ -107,20 +103,23 @@ private extension TagView {
             pointShadowView.left = width - pointShadowView.width
             pointCenterView.center = pointShadowView.center
 
-            contentView.right = 0
-
+            self.contentView.right = self.pointCenterView.left
+            
             UIView.animate(withDuration: 0.7) {
                 self.contentView.width = contentViewW
+                self.contentView.left = 0
             }
         }
         
         contentView.input.createContent.onNext(tagInfo)
 
         let tapGesture = UITapGestureRecognizer()
-        tapGesture.rx.event.bind { [unowned self] _ in
-            debugPrint(1111)
-            self.superview?.bringSubviewToFront(self)
-        }.disposed(by: rx.disposeBag)
+        tapGesture.rx.event
+            .bind { [unowned self] _ in
+                debugPrint(1111)
+                self.superview?.bringSubviewToFront(self)
+            }
+            .disposed(by: rx.disposeBag)
         addGestureRecognizer(tapGesture)
     }
 }
