@@ -83,7 +83,7 @@ private extension TagImageView {
                         }).first else {
                                 return
                     }
-                    
+
                     guard let index = infos.firstIndex(where: { info -> Bool in
                             return info.tagID == deleteInfo.tagID
                         }) else {
@@ -116,7 +116,7 @@ private extension TagImageView {
     }
     
     func remove(tagInfo: TagInfo) {
-
+        
         let tagViews = subviews.filter { view -> Bool in
             if let tgView = view as? TagView {
                 return tgView.tagID == tagInfo.tagID

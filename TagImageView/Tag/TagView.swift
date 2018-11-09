@@ -108,21 +108,22 @@ private extension TagView {
     }
     
     func changeDirection(tagInfo: TagInfo) {
-        //                self.remove(tagInfo: tagInfo)
-        //                self.removeTagInfo.onNext(tagInfo)
         
-        var upTagInfo = tagInfo
-        /// 改变方向... 相当于把 TagImageView 计算的过程重新来一遍....
-        if tagInfo.direction == .right {
-            /// 改到左边
-            
-            
-        } else {
-            /// 改到右边
-            
-        }
+        remove(tagInfo: tagInfo)
+        removeTagInfo.onNext(tagInfo)
         
-        updateTagInfo.onNext(upTagInfo)
+//        var upTagInfo = tagInfo
+//        /// 改变方向... 相当于把 TagImageView 计算的过程重新来一遍....
+//        if tagInfo.direction == .right {
+//            /// 改到左边
+//
+//
+//        } else {
+//            /// 改到右边
+//
+//        }
+//
+//        updateTagInfo.onNext(upTagInfo)
     }
     
     func update() {
