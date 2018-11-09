@@ -21,42 +21,62 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="test" translatesAutoresizingMaskIntoConstraints="NO" id="765-hz-ehP" customClass="TagImageView" customModule="TagImageView" customModuleProvider="target">
                                 <rect key="frame" x="10" y="100" width="355" height="287"/>
                             </imageView>
-                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="测试问发送到金坷垃" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Srt-Wt-M2d">
-                                <rect key="frame" x="16" y="449" width="343" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <nil key="textColor"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <button opaque="NO" tag="1" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="epf-2P-Hla">
-                                <rect key="frame" x="40" y="523" width="31" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="epf-2P-Hla">
+                                <rect key="frame" x="20" y="557" width="31" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="31" id="BCQ-sa-sYH"/>
+                                    <constraint firstAttribute="height" constant="30" id="h9t-9n-P9n"/>
+                                </constraints>
                                 <state key="normal" title="编辑"/>
                                 <connections>
                                     <action selector="change:" destination="TEy-ws-qZ5" eventType="touchUpInside" id="hvf-hS-pDb"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Agq-l6-QWQ">
-                                <rect key="frame" x="23" y="601" width="37" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="close"/>
-                                <connections>
-                                    <action selector="close:" destination="TEy-ws-qZ5" eventType="touchUpInside" id="Wk4-EG-uyy"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6v4-9m-Z1Q">
-                                <rect key="frame" x="98" y="523" width="56" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6v4-9m-Z1Q">
+                                <rect key="frame" x="71" y="557" width="56" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="hWu-GV-xoY"/>
+                                    <constraint firstAttribute="width" constant="56" id="kYr-Jk-7Aq"/>
+                                </constraints>
                                 <state key="normal" title="输出Tag"/>
                                 <connections>
                                     <action selector="printTag:" destination="TEy-ws-qZ5" eventType="touchUpInside" id="LMw-kR-lTA"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Agq-l6-QWQ">
+                                <rect key="frame" x="20" y="607" width="37" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="37" id="E3Q-iZ-pez"/>
+                                    <constraint firstAttribute="height" constant="30" id="y4R-sh-k3Q"/>
+                                </constraints>
+                                <state key="normal" title="close"/>
+                                <connections>
+                                    <action selector="close:" destination="TEy-ws-qZ5" eventType="touchUpInside" id="Wk4-EG-uyy"/>
+                                </connections>
+                            </button>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="测试问发送到金坷垃" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Srt-Wt-M2d">
+                                <rect key="frame" x="20" y="507" width="335" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="Br4-ib-EWn"/>
+                                </constraints>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
                         </subviews>
                         <color key="backgroundColor" red="1" green="0.1764705882" blue="0.33333333329999998" alpha="0.69999999999999996" colorSpace="calibratedRGB"/>
                         <constraints>
+                            <constraint firstItem="Srt-Wt-M2d" firstAttribute="leading" secondItem="eCh-31-lyb" secondAttribute="leading" constant="20" id="9vU-lm-xht"/>
+                            <constraint firstItem="6v4-9m-Z1Q" firstAttribute="centerY" secondItem="epf-2P-Hla" secondAttribute="centerY" id="Haj-9D-SGA"/>
+                            <constraint firstItem="6v4-9m-Z1Q" firstAttribute="leading" secondItem="epf-2P-Hla" secondAttribute="trailing" constant="20" id="MTg-OU-QsK"/>
                             <constraint firstItem="eCh-31-lyb" firstAttribute="bottom" secondItem="765-hz-ehP" secondAttribute="bottom" constant="280" id="V4Y-uF-fIw"/>
+                            <constraint firstItem="Agq-l6-QWQ" firstAttribute="top" secondItem="epf-2P-Hla" secondAttribute="bottom" constant="20" id="ZxZ-to-jsK"/>
+                            <constraint firstItem="eCh-31-lyb" firstAttribute="trailing" secondItem="Srt-Wt-M2d" secondAttribute="trailing" constant="20" id="av5-aX-NvH"/>
+                            <constraint firstItem="epf-2P-Hla" firstAttribute="leading" secondItem="eCh-31-lyb" secondAttribute="leading" constant="20" id="biB-h5-AxJ"/>
+                            <constraint firstItem="Agq-l6-QWQ" firstAttribute="leading" secondItem="eCh-31-lyb" secondAttribute="leading" constant="20" id="emB-7L-9qR"/>
                             <constraint firstItem="765-hz-ehP" firstAttribute="leading" secondItem="eCh-31-lyb" secondAttribute="leading" constant="10" id="hdz-48-FKd"/>
+                            <constraint firstItem="epf-2P-Hla" firstAttribute="top" secondItem="Srt-Wt-M2d" secondAttribute="bottom" constant="20" id="iP1-TH-PA9"/>
+                            <constraint firstItem="eCh-31-lyb" firstAttribute="bottom" secondItem="Agq-l6-QWQ" secondAttribute="bottom" constant="30" id="qB0-iF-KyV"/>
                             <constraint firstItem="eCh-31-lyb" firstAttribute="trailing" secondItem="765-hz-ehP" secondAttribute="trailing" constant="10" id="wvg-lt-BYZ"/>
                             <constraint firstItem="765-hz-ehP" firstAttribute="top" secondItem="eCh-31-lyb" secondAttribute="top" constant="80" id="ypF-2x-kAR"/>
                         </constraints>

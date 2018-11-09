@@ -72,6 +72,13 @@ extension TagView: TagViewOutputs {}
 private extension TagView {
     
     func dragging(gesture: UIPanGestureRecognizer) {
+        
+        let point = gesture.location(in: self)
+        debugPrint(point)
+//        self.center = point
+        left = point.x
+        top = point.y
+        
         if gesture.state == .began {
             
         } else if gesture.state == .changed {
@@ -86,7 +93,6 @@ private extension TagView {
         //                self.removeTagInfo.onNext(tagInfo)
         
         debugPrint("改变方向")
-        
     }
     
     func remove(tagInfo: TagInfo) {
@@ -234,8 +240,7 @@ private extension TagView {
         /// 小黑点
         pointShadowView.size = CGSize(width: 14, height: 14)
         pointShadowView.cornerRadius = 7
-//        pointShadowView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
-        pointShadowView.backgroundColor = .red
+        pointShadowView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
         addSubview(pointShadowView)
 
         /// 小白点
@@ -251,4 +256,22 @@ private extension TagView {
         pointCenterView.center = pointShadowView.center
     }
 }
+
+
+//private extension TagView {
+//
+//    func addAnimation() {
+//        let cka = CAKeyframeAnimation(keyPath: "transform.scale")
+//        //        cka.values = [0.7, 0.9, 0.9, 3.5, 0.9, 3.5]
+//        cka.values = [0.3, 0.5, 0.5, 1.0, 0.5, 0.5, 0.3]
+//        cka.keyTimes = [0.0, 0.3, 0.3, 0.65, 0.65, 1, 1]
+//        cka.repeatCount = MAXFLOAT
+//        cka.duration = 1.5
+//        pointShadowView.layer.add(cka, forKey: "cka")
+//    }
+//
+//    func removeAnimation() {
+//        //        pointShadowView.removeAnimation(forKey: "cka")
+//    }
+//}
 
