@@ -12,13 +12,27 @@ import RxCocoa
 import NSObject_Rx
 import SwifterSwift
 
+/*
+ TagView:
+ 传进来的 TagInfo, 在进行拖动, 改变方向等等操作, 在停止操作的时候, 通过 updateTagInfo 传递出去, 替换外面数组里的数据
+ */
+
 protocol TagViewInputs {
     
     /// 添加 tag 信息
     var createTag: PublishSubject<TagInfo> { get }
     
-    /// 删除 tag 信息
+    /// 删除 tag 信息 (操作图片删除)
     var removeTag: PublishSubject<TagInfo> { get }
+}
+
+protocol TagViewOutputs {
+    
+    /// 删除 (自己手动删除)
+    var removeTagInfo: PublishSubject<TagInfo> { get }
+    
+    /// 更新
+    var updateTagInfo: PublishSubject<TagInfo> { get }
 }
 
 class TagView: UIView {
@@ -26,6 +40,10 @@ class TagView: UIView {
     var input: TagViewInputs { return self }
     let createTag = PublishSubject<TagInfo>()
     let removeTag = PublishSubject<TagInfo>()
+
+    var output: TagViewOutputs { return self }
+    let removeTagInfo = PublishSubject<TagInfo>()
+    let updateTagInfo = PublishSubject<TagInfo>()
 
     var tagInfo: TagInfo?
     
@@ -48,6 +66,8 @@ class TagView: UIView {
 }
 
 extension TagView: TagViewInputs {}
+extension TagView: TagViewOutputs {}
+
 
 private extension TagView {
     
@@ -73,6 +93,8 @@ private extension TagView {
               let superViewH = superview?.height else {
                 return
         }
+        
+        tagID = tagInfo.tagID
         
         self.tagInfo = tagInfo
         
@@ -140,7 +162,7 @@ private extension TagView {
         let tapGesture = UITapGestureRecognizer()
         tapGesture.rx.event
             .bind { [unowned self] _ in
-                debugPrint(1111)
+                debugPrint("点击的 TagView")
                 self.superview?.bringSubviewToFront(self)
             }
             .disposed(by: rx.disposeBag)
@@ -149,10 +171,12 @@ private extension TagView {
         let pointGesture = UITapGestureRecognizer()
         tapGesture.rx.event
             .bind { [unowned self] _ in
+                debugPrint("点击的 pointView")
                 self.remove(tagInfo: tagInfo)
+                self.removeTagInfo.onNext(tagInfo)
             }
             .disposed(by: rx.disposeBag)
-        pointShadowView.addGestureRecognizer(pointGesture)
+        pointCenterView.addGestureRecognizer(pointGesture)
     }
 }
 
@@ -181,7 +205,8 @@ private extension TagView {
         /// 小黑点
         pointShadowView.size = CGSize(width: 14, height: 14)
         pointShadowView.cornerRadius = 7
-        pointShadowView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+//        pointShadowView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+        pointShadowView.backgroundColor = .red
         addSubview(pointShadowView)
 
         /// 小白点

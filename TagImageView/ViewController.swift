@@ -10,6 +10,10 @@ import UIKit
 import RxSwift
 import RxCocoa
 
+func uuid() -> String{
+    return NSUUID().uuidString
+}
+
 class ViewController: UIViewController {
 
     @IBOutlet weak var tagImageView: TagImageView!
@@ -20,6 +24,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
 
         let one = TagInfo(
+            tagID: uuid(),
             centerPointRatio: CGPoint(x: 0.1056338028169014, y: 0.4686411149825784),
             title: "哈哈哈fdsafsdafsdafsds",
             titleCenterPointRatio: CGPoint(x: 0.3908450704225352, y: 0.4686411149825784),
@@ -27,6 +32,7 @@ class ViewController: UIViewController {
         )
         
         let two = TagInfo(
+            tagID: uuid(),
             centerPointRatio: CGPoint(x: 0.07464788732394366, y: 0.8519163763066202),
             title: "哈哈哈fdsafsdafsdafsds",
             titleCenterPointRatio: CGPoint(x: 0.3598591549295775, y: 0.8519163763066202),
@@ -34,6 +40,7 @@ class ViewController: UIViewController {
         )
 
         let three = TagInfo(
+            tagID: uuid(),
             centerPointRatio: CGPoint(x: 0.8929577464788733, y: 0.6672473867595818),
             title: "哈哈哈fdsafsdafsdafsds",
             titleCenterPointRatio: CGPoint(x: 0.6077464788732394, y: 0.6672473867595818),

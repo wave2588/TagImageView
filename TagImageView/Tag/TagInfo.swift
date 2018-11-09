@@ -15,6 +15,8 @@ enum TagDirection {
 
 struct TagInfo {
     
+    var tagID: String
+    
     /// 小白点的中心点 ( 0 ~ 1 )
     var centerPointRatio: CGPoint
     
@@ -27,7 +29,8 @@ struct TagInfo {
     /// 方向
     var direction: TagDirection
     
-    init(centerPointRatio: CGPoint, title: String, titleCenterPointRatio: CGPoint, direction: TagDirection) {
+    init(tagID: String, centerPointRatio: CGPoint, title: String, titleCenterPointRatio: CGPoint, direction: TagDirection) {
+        self.tagID = tagID
         self.centerPointRatio = centerPointRatio
         self.title = title
         self.titleCenterPointRatio = titleCenterPointRatio

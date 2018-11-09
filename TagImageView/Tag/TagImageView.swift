@@ -24,8 +24,10 @@ protocol TagImageViewInputs {
     
     /// 设置 ImageView 的模式
     var state: BehaviorRelay<State> { get }
-    /// 添加标签, 并且进行模式设置
+    /// 添加标签
     var addTagInfos: BehaviorRelay<[TagInfo]> { get }
+    /// 删除标签
+    var removeTagInfos: BehaviorRelay<[TagInfo]> { get }
 }
 
 protocol TagImageViewOutputs {
@@ -41,11 +43,11 @@ class TagImageView: UIImageView {
 
     let state = BehaviorRelay<State>(value: .normal)
     let addTagInfos = BehaviorRelay<[TagInfo]>(value: ([]))
-    
+    let removeTagInfos = BehaviorRelay<[TagInfo]>(value: ([]))
+
     let tagInfos = BehaviorRelay<[TagInfo]>(value: ([]))
 
-    private var tagViews = [TagView]()
-    
+    /// test
     var testTitle: String = ""
     
     override func awakeFromNib() {
@@ -60,26 +62,64 @@ extension TagImageView: TagImageViewOutputs {}
 
 private extension TagImageView {
     
-    func add(tagInfos: [TagInfo]) {
+    /// 根据 tagID 去 subViews 里边找, 如果找到了则不添加, 没找到则进行添加
+    func add(tagInfo: TagInfo) {
+        
+        let tagViews = subviews.filter { view -> Bool in
+            if let tgView = view as? TagView {
+                return tgView.tagID == tagInfo.tagID
+            }
+            return false
+        }
 
-        tagInfos.forEach { [unowned self] tagInfo in
+        if tagViews.count == 0 {
             let tagView = TagView()
-            self.addSubview(tagView)
+            tagView.output
+                .removeTagInfo.subscribe(onNext: { [unowned self] info in
+                    
+                    var infos = self.addTagInfos.value
+                    guard let deleteInfo = infos.filter({ tempInfo -> Bool in
+                            return tempInfo.tagID == info.tagID
+                        }).first else {
+                                return
+                    }
+                    
+                    guard let index = infos.firstIndex(where: { info -> Bool in
+                            return info.tagID == deleteInfo.tagID
+                        }) else {
+                                return
+                        }
+                    infos.remove(at: index)
+                    self.addTagInfos.accept(infos)
+                })
+                .disposed(by: rx.disposeBag)
+            
+            tagView.output
+                .updateTagInfo.subscribe(onNext: { info in
+                
+                })
+                .disposed(by: rx.disposeBag)
+            addSubview(tagView)
             tagView.input.createTag.onNext(tagInfo)
-            self.tagViews.append(tagView)
         }
     }
     
-    func remove() {
-        tagViews.forEach { tagView in
-            if let tagInfo = tagView.tagInfo {
+    func remove(tagInfo: TagInfo) {
+
+        let tagViews = subviews.filter { view -> Bool in
+            if let tgView = view as? TagView {
+                return tgView.tagID == tagInfo.tagID
+            }
+            return false
+        }
+
+        if tagViews.count != 0 {
+            if let tagView = tagViews.first as? TagView {
                 tagView.input.removeTag.onNext(tagInfo)
             }
         }
-        tagViews = []
     }
     
-    /// 点击左边屏幕, 标签文字在右边..  点击右边屏幕, 标签文字在左边
     /// 点击创建的时候 centerPoint  title  titleCenterPoint  direction  都需要计算出来
     func createTagInfo(point: CGPoint, title: String) -> TagInfo? {
 
@@ -134,6 +174,7 @@ private extension TagImageView {
         let titleCenterPointRatio = CGPoint(x: lblCenterXRatio, y: lblCenterYRatio)
         
         let tagInfo = TagInfo(
+            tagID: uuid(),
             centerPointRatio: centerPointRatio,
             title: title,
             titleCenterPointRatio: titleCenterPointRatio,
@@ -155,8 +196,18 @@ private extension TagImageView {
             .disposed(by: rx.disposeBag)
         
         addTagInfos
-            .subscribe(onNext: { infos in
-                self.add(tagInfos: infos)
+            .subscribe(onNext: { [unowned self] infos in
+                infos.forEach({ info in
+                    self.add(tagInfo: info)
+                })
+            })
+            .disposed(by: rx.disposeBag)
+        
+        removeTagInfos
+            .subscribe(onNext: { [unowned self] infos in
+                infos.forEach({ info in
+                    self.remove(tagInfo: info)
+                })
             })
             .disposed(by: rx.disposeBag)
     }
@@ -184,16 +235,26 @@ private extension TagImageView {
                         guard let tagInfo = self.createTagInfo(point: point, title: self.testTitle) else {
                             return
                         }
-                        
-                        self.add(tagInfos: [tagInfo])
+                        var infos = self.addTagInfos.value
+                        infos.append(tagInfo)
+                        self.addTagInfos.accept(infos)
                     }
                 } else if state == .image {
                     
-                    let tagInfos = self.addTagInfos.value
-                    if self.tagViews.count == 0 {
-                        self.add(tagInfos: tagInfos)
+                    /// 获取当前页面上所有的 tagViews
+                    let tagViews = self.subviews.filter({ view -> Bool in
+                        if let _ = view as? TagView {
+                            return true
+                        }
+                        return false
+                    })
+                    
+                    if tagViews.count == 0 {
+                        /// 添加
+                        self.addTagInfos.accept(self.addTagInfos.value)
                     } else {
-                        self.remove()
+                        /// 删除
+                        self.removeTagInfos.accept(self.addTagInfos.value)
                     }
                 }
             })
