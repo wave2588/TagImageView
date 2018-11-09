@@ -86,7 +86,7 @@ private extension TagImageView {
             
             tagView.output
                 .updateTagInfo.subscribe(onNext: { info in
-                
+
                 })
                 .disposed(by: rx.disposeBag)
             addSubview(tagView)

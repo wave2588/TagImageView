@@ -81,6 +81,14 @@ private extension TagView {
         }
     }
     
+    func changeDirection(tagInfo: TagInfo) {
+        //                self.remove(tagInfo: tagInfo)
+        //                self.removeTagInfo.onNext(tagInfo)
+        
+        debugPrint("改变方向")
+        
+    }
+    
     func remove(tagInfo: TagInfo) {
 
         self.superview?.bringSubviewToFront(self)
@@ -185,13 +193,12 @@ private extension TagView {
             .disposed(by: rx.disposeBag)
         addGestureRecognizer(tapGesture)
         
-        /// 点击小红点变换方向, 暂时写成了点击删除
+        /// 点击小红点切换方向
         let pointGesture = UITapGestureRecognizer()
         pointGesture.rx.event
             .bind { [unowned self] _ in
                 guard let tagInfo = self.tagInfo else { return }
-                self.remove(tagInfo: tagInfo)
-                self.removeTagInfo.onNext(tagInfo)
+                self.changeDirection(tagInfo: tagInfo)
             }
             .disposed(by: rx.disposeBag)
         pointShadowView.addGestureRecognizer(pointGesture)
