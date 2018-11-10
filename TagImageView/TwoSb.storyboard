@@ -19,7 +19,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="test" translatesAutoresizingMaskIntoConstraints="NO" id="765-hz-ehP" customClass="TagImageView" customModule="TagImageView" customModuleProvider="target">
-                                <rect key="frame" x="10" y="100" width="355" height="287"/>
+                                <rect key="frame" x="10" y="100" width="355" height="200"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="200" id="WIR-4R-he5"/>
+                                </constraints>
                             </imageView>
                             <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="epf-2P-Hla">
                                 <rect key="frame" x="20" y="557" width="31" height="30"/>
@@ -67,18 +70,17 @@
                         <color key="backgroundColor" red="1" green="0.1764705882" blue="0.33333333329999998" alpha="0.69999999999999996" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="Srt-Wt-M2d" firstAttribute="leading" secondItem="eCh-31-lyb" secondAttribute="leading" constant="20" id="9vU-lm-xht"/>
+                            <constraint firstItem="765-hz-ehP" firstAttribute="leading" secondItem="eCh-31-lyb" secondAttribute="leading" constant="10" id="FkW-sU-XAM"/>
                             <constraint firstItem="6v4-9m-Z1Q" firstAttribute="centerY" secondItem="epf-2P-Hla" secondAttribute="centerY" id="Haj-9D-SGA"/>
+                            <constraint firstItem="eCh-31-lyb" firstAttribute="trailing" secondItem="765-hz-ehP" secondAttribute="trailing" constant="10" id="LR4-DD-gd2"/>
                             <constraint firstItem="6v4-9m-Z1Q" firstAttribute="leading" secondItem="epf-2P-Hla" secondAttribute="trailing" constant="20" id="MTg-OU-QsK"/>
-                            <constraint firstItem="eCh-31-lyb" firstAttribute="bottom" secondItem="765-hz-ehP" secondAttribute="bottom" constant="280" id="V4Y-uF-fIw"/>
+                            <constraint firstItem="765-hz-ehP" firstAttribute="top" secondItem="eCh-31-lyb" secondAttribute="top" constant="80" id="X6Z-X7-jMc"/>
                             <constraint firstItem="Agq-l6-QWQ" firstAttribute="top" secondItem="epf-2P-Hla" secondAttribute="bottom" constant="20" id="ZxZ-to-jsK"/>
                             <constraint firstItem="eCh-31-lyb" firstAttribute="trailing" secondItem="Srt-Wt-M2d" secondAttribute="trailing" constant="20" id="av5-aX-NvH"/>
                             <constraint firstItem="epf-2P-Hla" firstAttribute="leading" secondItem="eCh-31-lyb" secondAttribute="leading" constant="20" id="biB-h5-AxJ"/>
                             <constraint firstItem="Agq-l6-QWQ" firstAttribute="leading" secondItem="eCh-31-lyb" secondAttribute="leading" constant="20" id="emB-7L-9qR"/>
-                            <constraint firstItem="765-hz-ehP" firstAttribute="leading" secondItem="eCh-31-lyb" secondAttribute="leading" constant="10" id="hdz-48-FKd"/>
                             <constraint firstItem="epf-2P-Hla" firstAttribute="top" secondItem="Srt-Wt-M2d" secondAttribute="bottom" constant="20" id="iP1-TH-PA9"/>
                             <constraint firstItem="eCh-31-lyb" firstAttribute="bottom" secondItem="Agq-l6-QWQ" secondAttribute="bottom" constant="30" id="qB0-iF-KyV"/>
-                            <constraint firstItem="eCh-31-lyb" firstAttribute="trailing" secondItem="765-hz-ehP" secondAttribute="trailing" constant="10" id="wvg-lt-BYZ"/>
-                            <constraint firstItem="765-hz-ehP" firstAttribute="top" secondItem="eCh-31-lyb" secondAttribute="top" constant="80" id="ypF-2x-kAR"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="eCh-31-lyb"/>
                     </view>

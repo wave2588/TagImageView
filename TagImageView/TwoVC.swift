@@ -67,7 +67,6 @@ class TwoVC: UIViewController {
                 debugPrint("clickTagView", info)
             })
             .disposed(by: rx.disposeBag)
-        
     }
     
     @IBAction func change(_ sender: UIButton) {

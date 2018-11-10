@@ -353,7 +353,8 @@ private extension TagView {
         pointShadowView.cornerRadius = 7
         pointShadowView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
         addSubview(pointShadowView)
-
+        addAnimation()
+        
         /// 小白点
         pointCenterView.size = CGSize(width: 6, height: 6)
         pointCenterView.cornerRadius = 3
@@ -369,20 +370,22 @@ private extension TagView {
 }
 
 
-//private extension TagView {
-//
-//    func addAnimation() {
-//        let cka = CAKeyframeAnimation(keyPath: "transform.scale")
-//        //        cka.values = [0.7, 0.9, 0.9, 3.5, 0.9, 3.5]
-//        cka.values = [0.3, 0.5, 0.5, 1.0, 0.5, 0.5, 0.3]
-//        cka.keyTimes = [0.0, 0.3, 0.3, 0.65, 0.65, 1, 1]
-//        cka.repeatCount = MAXFLOAT
-//        cka.duration = 1.5
-//        pointShadowView.layer.add(cka, forKey: "cka")
-//    }
-//
-//    func removeAnimation() {
-//        //        pointShadowView.removeAnimation(forKey: "cka")
-//    }
-//}
+private extension TagView {
+
+    func addAnimation() {
+        let cka = CAKeyframeAnimation(keyPath: "transform.scale")
+        //        cka.values = [0.7, 0.9, 0.9, 3.5, 0.9, 3.5]
+//        cka.values = [0.3, 0.5, 0.5, 1.0, 1.0, 0.5, 0.3]
+        cka.values = [0.4, 0.6, 0.6, 1.0, 1.0, 0.6, 0.6, 0.5]
+//        cka.keyTimes = [0.0, 0.3, 0.3, 0.65, 0.65, 1, 1, 1]
+        cka.keyTimes = [0.0, 0.3, 0.3, 0.5, 0.5, 0.8, 0.8, 1]
+        cka.repeatCount = MAXFLOAT
+        cka.duration = 2.0
+        pointShadowView.layer.add(cka, forKey: "cka")
+    }
+
+    func removeAnimation() {
+        //        pointShadowView.removeAnimation(forKey: "cka")
+    }
+}
 
