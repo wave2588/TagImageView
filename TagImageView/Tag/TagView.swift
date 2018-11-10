@@ -109,28 +109,30 @@ private extension TagView {
     
     func changeDirection(tagInfo: TagInfo) {
         
-//        remove(tagInfo: tagInfo)
-//        removeTagInfo.onNext(tagInfo)
         guard let superViewW = superview?.width,
             let superViewH = superview?.height else {
                 return
         }
         
+        let pointViewW: CGFloat = 14
+        //            let pointViewH: CGFloat = 22
+        /// 先计算点的位置
+        let centerPoint = CGPoint(
+            x: tagInfo.centerPointRatio.x * superViewW,
+            y: tagInfo.centerPointRatio.y * superViewH
+        )
+        
         /// 改变方向... 相当于把 TagImageView 计算的过程重新来一遍....
         if tagInfo.direction == .right {
             /// 改到左边
             debugPrint("改到左边")
+            UIView.animate(withDuration: 0.4) {
+                self.contentView.width = 0
+
+            }
 
         } else {
             /// 改到右边
-            let pointViewW: CGFloat = 14
-//            let pointViewH: CGFloat = 22
-            /// 先计算点的位置
-            let centerPoint = CGPoint(
-                x: tagInfo.centerPointRatio.x * superViewW,
-                y: tagInfo.centerPointRatio.y * superViewH
-            )
-            
             /// 先把 contentView 隐藏
             UIView.animate(withDuration: 0.4, animations: {
                 self.contentView.width = 0
@@ -299,6 +301,9 @@ private extension TagView {
         contentView.height = 22
         addSubview(contentView)
         
+        addSubview(pointShadowView)
+        addSubview(pointCenterView)
+
         if tagInfo.direction == .right {
             
             let contentViewLeft = left + pointShadowView.width + 21
@@ -412,7 +417,6 @@ private extension TagView {
         pointShadowView.cornerRadius = 7
 //        pointShadowView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
         pointShadowView.backgroundColor = .black
-        addSubview(pointShadowView)
 //        addAnimation()
         
         /// 小白点
@@ -423,7 +427,6 @@ private extension TagView {
         pointCenterView.shadowColor = .black
         pointCenterView.shadowRadius = 1.5
         pointCenterView.shadowOpacity = 0.5
-        addSubview(pointCenterView)
 
         pointCenterView.center = pointShadowView.center
     }
