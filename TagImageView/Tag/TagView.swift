@@ -109,21 +109,74 @@ private extension TagView {
     
     func changeDirection(tagInfo: TagInfo) {
         
-        remove(tagInfo: tagInfo)
-        removeTagInfo.onNext(tagInfo)
+//        remove(tagInfo: tagInfo)
+//        removeTagInfo.onNext(tagInfo)
+        guard let superViewW = superview?.width,
+            let superViewH = superview?.height else {
+                return
+        }
         
-//        var upTagInfo = tagInfo
-//        /// 改变方向... 相当于把 TagImageView 计算的过程重新来一遍....
-//        if tagInfo.direction == .right {
-//            /// 改到左边
-//
-//
-//        } else {
-//            /// 改到右边
-//
-//        }
-//
-//        updateTagInfo.onNext(upTagInfo)
+        /// 改变方向... 相当于把 TagImageView 计算的过程重新来一遍....
+        if tagInfo.direction == .right {
+            /// 改到左边
+            debugPrint("改到左边")
+
+        } else {
+            /// 改到右边
+            let pointViewW: CGFloat = 14
+//            let pointViewH: CGFloat = 22
+            /// 先计算点的位置
+            let centerPoint = CGPoint(
+                x: tagInfo.centerPointRatio.x * superViewW,
+                y: tagInfo.centerPointRatio.y * superViewH
+            )
+            
+            /// 先把 contentView 隐藏
+            UIView.animate(withDuration: 0.4, animations: {
+                self.contentView.width = 0
+                self.contentView.left = self.width - self.pointCenterView.width
+            }) { _ in
+                self.width = pointViewW
+                self.center = centerPoint
+                self.pointShadowView.left = 0
+                self.pointCenterView.center = self.pointShadowView.center
+                
+                /// 计算 contentView 宽度
+                var contentViewW = self.getContentViewWidth(title: tagInfo.title)
+                /// 距离父控件的 x 值
+                let contentViewX = self.left + self.pointShadowView.width
+                /// 判断是否超出了屏幕
+                if contentViewX + contentViewW >= superViewW {
+                    let excess = superViewW - contentViewX - contentViewW
+                    contentViewW = contentViewW + excess
+                }
+                
+                let titleW = contentViewW - 25
+                let titleCenterX = self.left + self.pointShadowView.width + 21 + titleW * 0.5
+                let titleCenterY = self.centerY
+                let titleCenterPointRatio = CGPoint(
+                    x: titleCenterX / superViewW,
+                    y: titleCenterY / superViewH
+                )
+
+                let upTagInfo = TagInfo(
+                    tagID: tagInfo.tagID,
+                    centerPointRatio: tagInfo.centerPointRatio,
+                    title: tagInfo.title,
+                    titleCenterPointRatio: titleCenterPointRatio,
+                    direction: .right
+                )
+                self.updateTagInfo.onNext(upTagInfo)
+                
+                /// 设置自己的宽度, - 4 是因为有4个像素缩进 pointView 里边, 线和点要链接在一起
+                self.contentView.width = contentViewW
+                self.contentView.left = self.pointCenterView.right
+                UIView.animate(withDuration: 0.4, animations: {
+                    self.width = self.pointShadowView.width + contentViewW - 4
+                })
+                self.contentView.updateContent.onNext(.right)
+            }
+        }
     }
     
     func update() {
@@ -321,6 +374,8 @@ private extension TagView {
                 if state == .edit {
                     
                     self.pointShadowView.addGestureRecognizer(self.pointGesture)
+                    self.pointCenterView.addGestureRecognizer(self.pointGesture)
+                    
                     self.addGestureRecognizer(self.panGesture)
                     self.addGestureRecognizer(self.tapGesture)
                 } else {
@@ -328,6 +383,7 @@ private extension TagView {
                     self.addGestureRecognizer(self.tapGesture)
                     
                     self.pointShadowView.removeGestureRecognizer(self.pointGesture)
+                    self.pointCenterView.removeGestureRecognizer(self.pointGesture)
                     self.removeGestureRecognizer(self.panGesture)
                 }
             }
@@ -340,9 +396,10 @@ private extension TagView {
             .disposed(by: rx.disposeBag)
         
         removeTag
-            .subscribe(onNext: { [unowned self] tagInfo in
+            .subscribe { event in
+                guard let tagInfo = event.element else { return }
                 self.remove(tagInfo: tagInfo)
-            })
+            }
             .disposed(by: rx.disposeBag)
     }
     
@@ -351,9 +408,10 @@ private extension TagView {
         /// 小黑点
         pointShadowView.size = CGSize(width: 14, height: 14)
         pointShadowView.cornerRadius = 7
-        pointShadowView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+//        pointShadowView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+        pointShadowView.backgroundColor = .black
         addSubview(pointShadowView)
-        addAnimation()
+//        addAnimation()
         
         /// 小白点
         pointCenterView.size = CGSize(width: 6, height: 6)

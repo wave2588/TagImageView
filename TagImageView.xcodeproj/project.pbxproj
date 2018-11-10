@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		402FF8332196C58500B422CD /* TagPointView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 402FF8322196C58500B422CD /* TagPointView.swift */; };
 		407A78962192869B0039D820 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 407A78952192869B0039D820 /* AppDelegate.swift */; };
 		407A78982192869B0039D820 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 407A78972192869B0039D820 /* ViewController.swift */; };
 		407A789B2192869B0039D820 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 407A78992192869B0039D820 /* Main.storyboard */; };
@@ -26,6 +27,7 @@
 
 /* Begin PBXFileReference section */
 		3FF604AF01AA7A9D7B560E76 /* Pods-TagImageView.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TagImageView.release.xcconfig"; path = "Pods/Target Support Files/Pods-TagImageView/Pods-TagImageView.release.xcconfig"; sourceTree = "<group>"; };
+		402FF8322196C58500B422CD /* TagPointView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagPointView.swift; sourceTree = "<group>"; };
 		407A78922192869B0039D820 /* TagImageView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TagImageView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		407A78952192869B0039D820 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		407A78972192869B0039D820 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -101,6 +103,7 @@
 				407A78AC219287890039D820 /* TagImageView.swift */,
 				407A78AD219287890039D820 /* TagView.swift */,
 				407A78BD2192E56A0039D820 /* TagContentView.swift */,
+				402FF8322196C58500B422CD /* TagPointView.swift */,
 				407A78B0219287B10039D820 /* TagInfo.swift */,
 				40EDA2D521955EDD002830CD /* TagView+Extension.swift */,
 			);
@@ -276,6 +279,7 @@
 				40EDA2D821956DBB002830CD /* TwoVC.swift in Sources */,
 				40EDA2D621955EDD002830CD /* TagView+Extension.swift in Sources */,
 				407A78AE219287890039D820 /* TagImageView.swift in Sources */,
+				402FF8332196C58500B422CD /* TagPointView.swift in Sources */,
 				407A78982192869B0039D820 /* ViewController.swift in Sources */,
 				407A78BC2192C8990039D820 /* UIView+Frame.m in Sources */,
 				407A78962192869B0039D820 /* AppDelegate.swift in Sources */,

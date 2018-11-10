@@ -16,13 +16,17 @@ protocol TagContentViewInputs {
     
     /// tag 信息
     var createContent: PublishSubject<TagInfo> { get }
+    
+    /// 更新 contentView 布局
+    var updateContent: PublishSubject<TagDirection> { get }
 }
 
 class TagContentView: UIView {
     
     var input: TagContentViewInputs { return self }
     let createContent = PublishSubject<TagInfo>()
-    
+    let updateContent = PublishSubject<TagDirection>()
+
     private var lineView = UIView()
     private var backView = UIView()
     private var titleLbl = UILabel()
@@ -75,6 +79,19 @@ private extension TagContentView {
             lineView.left = backView.right
         }
     }
+    
+    func update(direction: TagDirection) {
+        if direction == .right {
+            lineView.left = 0
+            backView.left = lineView.right
+        } else {
+            backView.left = 0
+            lineView.left = backView.right
+        }
+        backView.width = width - lineView.width
+        titleLbl.left = 6
+        titleLbl.width = backView.width - 12
+    }
 }
 
 private extension TagContentView {
@@ -86,6 +103,12 @@ private extension TagContentView {
         createContent
             .subscribe(onNext: { [unowned self] info in
                 self.create(info: info)
+            })
+            .disposed(by: rx.disposeBag)
+        
+        updateContent
+            .subscribe(onNext: { [unowned self] direction in
+                self.update(direction: direction)
             })
             .disposed(by: rx.disposeBag)
     }
