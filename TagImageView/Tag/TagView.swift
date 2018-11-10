@@ -166,6 +166,7 @@ private extension TagView {
                     titleCenterPointRatio: titleCenterPointRatio,
                     direction: .right
                 )
+                self.tagInfo = upTagInfo
                 self.updateTagInfo.onNext(upTagInfo)
                 
                 /// 设置自己的宽度, - 4 是因为有4个像素缩进 pointView 里边, 线和点要链接在一起
@@ -242,6 +243,7 @@ private extension TagView {
             )
         }
         guard let info = upTagInfo else { return }
+        self.tagInfo = info
         updateTagInfo.onNext(info)
     }
     
