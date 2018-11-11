@@ -67,6 +67,7 @@ class TagView: UIView {
     /// 拖动
     private let panGesture = UIPanGestureRecognizer()
 
+    private var beganPoint = CGPoint(x: 0, y: 0)
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -88,32 +89,46 @@ private extension TagView {
         
         guard let superViewW = superview?.width,
               let superViewH = superview?.height,
-              let superView = superview else {
+              let superView = superview,
+              let tagInfo = tagInfo else {
                 return
         }
-
-        let point = gesture.translation(in: superView)
+        let locationPoint = gesture.location(in: superView)
+        let translationPotion = gesture.translation(in: superView)
         if gesture.state == .began {
             
             self.superview?.bringSubviewToFront(self)
+            beganPoint = locationPoint
         } else if gesture.state == .changed {
             
-            /// 在这里判断是否需要缩放
-            let newLeft = left + point.x
-            let newTop = top + point.y
-            
-            if newLeft > 0 && newLeft + width < superViewW {
+            /// 计算出偏移量
+            let newLeft = left + translationPotion.x
+            let newTop = top + translationPotion.y
+
+            if newLeft > 0 && newLeft + width <= superViewW {
                 left = newLeft
             }
-            if newTop > 0 && newTop + height < superViewH {
+            if newTop > 0 && newTop + height <= superViewH {
                 top = newTop
             }
-            
             gesture.setTranslation(.zero, in: self)
 
-        } else if gesture.state == .ended || gesture.state == .cancelled || gesture.state == .failed {
+            updateLocation()
+            
+            /// 算一个正常宽度, 然后跟当前宽度进行比较
+            let pCenterPoint = CGPoint(
+                x: tagInfo.centerPointRatio.x * superViewW,
+                y: tagInfo.centerPointRatio.y * superViewH
+            )
 
-            update()
+            let titleCenterPoint = CGPoint(
+                x: tagInfo.titleCenterPointRatio.x * superViewW,
+                y: tagInfo.titleCenterPointRatio.y * superViewH
+            )
+            let normalTitleWidth = (titleCenterPoint.x - pCenterPoint.x - TagTool.lineWidth) * 2
+            let normalWidth = pointView.width * 0.5 + TagTool.lineWidth + normalTitleWidth
+
+        } else if gesture.state == .ended || gesture.state == .cancelled || gesture.state == .failed {
 
             /// 删除区域 (50 50)
             let point = gesture.location(in: superView)
@@ -123,12 +138,78 @@ private extension TagView {
                 point.x <= deleteX + 50 &&
                 point.y >= deleteY &&
                 point.y <= deleteY + 50 {
-                guard let info = tagInfo else { return }
-                removeTagInfo.onNext(info)
+                removeTagInfo.onNext(tagInfo)
             }
         }
     }
     
+    func updateLocation() {
+        
+        guard let superViewW = superview?.width,
+            let superViewH = superview?.height,
+            let tagInfo = self.tagInfo else {
+                return
+        }
+        
+        var upTagInfo: TagInfo?
+        if tagInfo.direction == .right {
+            
+            /// 计算 point center 位置
+            let pointCenterX = left + pointView.width * 0.5
+            let pointCenterY = centerY
+            let centerPointRatio = CGPoint(
+                x: pointCenterX / superViewW,
+                y: pointCenterY / superViewH
+            )
+            
+            /// 计算 title center 位置
+            let titleW = width - TagTool.lineWidth - pointView.width * 0.5
+            let titleCenterX = pointCenterX + TagTool.lineWidth + titleW * 0.5
+            let titleCenterY = centerY
+            let titleCenterPointRatio = CGPoint(
+                x: titleCenterX / superViewW,
+                y: titleCenterY / superViewH
+            )
+            
+            upTagInfo = TagInfo(
+                tagID: tagInfo.tagID,
+                centerPointRatio: centerPointRatio,
+                title: tagInfo.title,
+                titleCenterPointRatio: titleCenterPointRatio,
+                direction: tagInfo.direction
+            )
+        } else {
+            
+            /// 计算 point center 位置
+            let pointCenterX = right - pointView.width * 0.5
+            let pointCenterY = centerY
+            let centerPointRatio = CGPoint(
+                x: pointCenterX / superViewW,
+                y: pointCenterY / superViewH
+            )
+            
+            /// 计算 title center 位置
+            let titleW = width - TagTool.lineWidth - pointView.width * 0.5
+            let titleCenterX = left + titleW * 0.5
+            let titleCenterY = centerY
+            let titleCenterPointRatio = CGPoint(
+                x: titleCenterX / superViewW,
+                y: titleCenterY / superViewH
+            )
+            
+            upTagInfo = TagInfo(
+                tagID: tagInfo.tagID,
+                centerPointRatio: centerPointRatio,
+                title: tagInfo.title,
+                titleCenterPointRatio: titleCenterPointRatio,
+                direction: tagInfo.direction
+            )
+        }
+        guard let info = upTagInfo else { return }
+        self.tagInfo = info
+        updateTagInfo.onNext(info)
+    }
+
     func changeDirection(tagInfo: TagInfo) {
         
         guard let superViewW = superview?.width,
@@ -147,7 +228,7 @@ private extension TagView {
         /// 改变方向... 相当于把 TagImageView 计算的过程重新来一遍....
         if tagInfo.direction == .right {
             /// 改到左边
-            UIView.animate(withDuration: 0.4, animations: {
+            UIView.animate(withDuration: 0.25, animations: {
                 self.contentView.width = 0
             }) { _ in
                 self.width = pointViewW
@@ -169,7 +250,7 @@ private extension TagView {
                 self.pointView.right = self.width
                 self.contentView.left = self.pointView.left - self.pointView.width * 0.5
                 self.contentView.width = contentViewW
-                UIView.animate(withDuration: 0.4, animations: {
+                UIView.animate(withDuration: 0.25, animations: {
                     self.contentView.left = 0
                 })
                 self.contentView.input.updateContent.onNext(.left)
@@ -195,7 +276,7 @@ private extension TagView {
         } else {
             /// 改到右边
             /// 先把 contentView 隐藏
-            UIView.animate(withDuration: 0.4, animations: {
+            UIView.animate(withDuration: 0.25, animations: {
                 self.contentView.width = 0
                 self.contentView.left = self.width - self.pointView.width * 0.5
             }) { _ in
@@ -217,7 +298,7 @@ private extension TagView {
                 self.contentView.width = contentViewW
                 self.contentView.left = self.pointView.right - self.pointView.width * 0.5
                 let selfWidth = self.pointView.width * 0.5 + contentViewW
-                UIView.animate(withDuration: 0.4, animations: {
+                UIView.animate(withDuration: 0.25, animations: {
                     self.width = selfWidth
                 })
                 self.contentView.updateContent.onNext(.right)
@@ -244,78 +325,11 @@ private extension TagView {
         }
     }
     
-    func update() {
-        
-        guard let superViewW = superview?.width,
-              let superViewH = superview?.height,
-              let tagInfo = self.tagInfo else {
-                return
-        }
-
-        var upTagInfo: TagInfo?
-        if tagInfo.direction == .right {
-
-            /// 计算 point center 位置
-            let pointCenterX = left + pointView.width * 0.5
-            let pointCenterY = centerY
-            let centerPointRatio = CGPoint(
-                x: pointCenterX / superViewW,
-                y: pointCenterY / superViewH
-            )
-
-            /// 计算 title center 位置
-            let titleW = width - TagTool.lineWidth - pointView.width * 0.5
-            let titleCenterX = pointCenterX + TagTool.lineWidth + titleW * 0.5
-            let titleCenterY = centerY
-            let titleCenterPointRatio = CGPoint(
-                x: titleCenterX / superViewW,
-                y: titleCenterY / superViewH
-            )
-
-            upTagInfo = TagInfo(
-                tagID: tagInfo.tagID,
-                centerPointRatio: centerPointRatio,
-                title: tagInfo.title,
-                titleCenterPointRatio: titleCenterPointRatio,
-                direction: tagInfo.direction
-            )
-        } else {
-
-            /// 计算 point center 位置
-            let pointCenterX = right - pointView.width * 0.5
-            let pointCenterY = centerY
-            let centerPointRatio = CGPoint(
-                x: pointCenterX / superViewW,
-                y: pointCenterY / superViewH
-            )
-
-            /// 计算 title center 位置
-            let titleW = width - TagTool.lineWidth - pointView.width * 0.5
-            let titleCenterX = left + titleW * 0.5
-            let titleCenterY = centerY
-            let titleCenterPointRatio = CGPoint(
-                x: titleCenterX / superViewW,
-                y: titleCenterY / superViewH
-            )
-
-            upTagInfo = TagInfo(
-                tagID: tagInfo.tagID,
-                centerPointRatio: centerPointRatio,
-                title: tagInfo.title,
-                titleCenterPointRatio: titleCenterPointRatio,
-                direction: tagInfo.direction
-            )
-        }
-        guard let info = upTagInfo else { return }
-        self.tagInfo = info
-        updateTagInfo.onNext(info)
-    }
-    
     func remove(tagInfo: TagInfo) {
 
         self.superview?.bringSubviewToFront(self)
 
-        UIView.animate(withDuration: 0.4, animations: {
+        UIView.animate(withDuration: 0.25, animations: {
             if tagInfo.direction == .right {
                 self.contentView.width = 0
             } else {
@@ -373,7 +387,7 @@ private extension TagView {
             let contentViewW = lblW + TagTool.lineWidth
             contentView.left = pointView.width * 0.5
             contentView.width = contentViewW
-            UIView.animate(withDuration: 0.4) {
+            UIView.animate(withDuration: 0.25) {
                 self.width = self.pointView.width * 0.5 + contentViewW
             }
         } else {
@@ -386,7 +400,7 @@ private extension TagView {
             left = left - contentViewW + pointView.width * 0.5
             pointView.left = lblW + TagTool.lineWidth - pointView.width * 0.5
             contentView.right = pointView.center.x
-            UIView.animate(withDuration: 0.4) {
+            UIView.animate(withDuration: 0.25) {
                 self.contentView.left = 0
                 self.contentView.width = contentViewW
             }
