@@ -102,8 +102,14 @@ private extension TagView {
             
             let newLeft = left + point.x
             let newTop = top + point.y
-            left = newLeft
-            top = newTop
+            
+            if newLeft > 0 && newLeft + width < superViewW {
+                left = newLeft
+            }
+            if newTop > 0 && newTop + height < superViewH {
+                top = newTop
+            }
+            
             gesture.setTranslation(.zero, in: self)
 
         } else if gesture.state == .ended || gesture.state == .cancelled || gesture.state == .failed {
