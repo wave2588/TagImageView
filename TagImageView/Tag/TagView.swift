@@ -100,6 +100,10 @@ private extension TagView {
             self.superview?.bringSubviewToFront(self)
         } else if gesture.state == .changed {
             
+            /// 在这里判断是否需要缩放
+            
+            
+            
             let newLeft = left + point.x
             let newTop = top + point.y
             

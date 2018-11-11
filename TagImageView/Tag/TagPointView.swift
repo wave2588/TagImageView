@@ -71,9 +71,5 @@ private extension TagPointView {
         cka.duration = 2.0
         pointShadowView.layer.add(cka, forKey: "cka")
     }
-    
-    func removeAnimation() {
-        //        pointShadowView.removeAnimation(forKey: "cka")
-    }
 }
 
