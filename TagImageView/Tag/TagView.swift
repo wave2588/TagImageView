@@ -89,7 +89,7 @@ private extension TagView {
     func dragging(gesture: UIPanGestureRecognizer) {
         
         guard let superViewW = superview?.width,
-            let superViewH = superview?.height else {
+              let superViewH = superview?.height else {
                 return
         }
 
@@ -322,8 +322,8 @@ private extension TagView {
         )
         
         /// 先初始化自己的 大小 and 位置
-        height = 22
-        width = 14
+        height = TagTool.pointHeight
+        width = TagTool.pointWidth
         center = pointViewCenterPoint
         
         let titleCenterPoint = CGPoint(

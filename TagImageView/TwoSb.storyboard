@@ -19,9 +19,9 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="test" translatesAutoresizingMaskIntoConstraints="NO" id="765-hz-ehP" customClass="TagImageView" customModule="TagImageView" customModuleProvider="target">
-                                <rect key="frame" x="10" y="100" width="355" height="200"/>
+                                <rect key="frame" x="10" y="100" width="355" height="350"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="200" id="WIR-4R-he5"/>
+                                    <constraint firstAttribute="height" constant="350" id="WIR-4R-he5"/>
                                 </constraints>
                             </imageView>
                             <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="epf-2P-Hla">
