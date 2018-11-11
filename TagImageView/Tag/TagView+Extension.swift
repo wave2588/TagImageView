@@ -11,7 +11,7 @@ import UIKit
 extension TagView {
     
     private struct AssociatedKeys {
-        static var tagID = "eventId"
+        static var tagID = "tagID"
     }
     
     @IBInspectable var tagID: String? {

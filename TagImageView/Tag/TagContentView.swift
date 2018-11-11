@@ -113,9 +113,5 @@ private extension TagContentView {
             })
             .disposed(by: rx.disposeBag)
     }
-    
-    func configureUI() {
-        
-    }
 }
 

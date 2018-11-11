@@ -52,11 +52,9 @@ class TagView: UIView {
     let updateTagInfo = PublishSubject<TagInfo>()
     let clickTagView = PublishSubject<TagInfo>()
 
-    
     private var tagInfo: TagInfo?
     
-    
-    /// 点
+    /// 小点点
     private var pointView = TagPointView()
     
     /// 内容视图, 包括白线
@@ -101,9 +99,6 @@ private extension TagView {
         } else if gesture.state == .changed {
             
             /// 在这里判断是否需要缩放
-            
-            
-            
             let newLeft = left + point.x
             let newTop = top + point.y
             
