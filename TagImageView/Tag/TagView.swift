@@ -55,10 +55,10 @@ class TagView: UIView {
     
     private var tagInfo: TagInfo?
     
-    /// 白点
-    private var pointCenterView = UIView()
-    /// 白点阴影
-    private var pointShadowView = UIView()
+    
+    /// 点
+    private var pointView = TagPointView()
+    
     /// 内容视图, 包括白线
     private var contentView = TagContentView()
     
@@ -114,8 +114,8 @@ private extension TagView {
                 return
         }
         
-        let pointViewW: CGFloat = 14
-        //            let pointViewH: CGFloat = 22
+        let pointViewW = TagTool.pointWidth
+        
         /// 先计算点的位置
         let centerPoint = CGPoint(
             x: tagInfo.centerPointRatio.x * superViewW,
@@ -130,8 +130,7 @@ private extension TagView {
             }) { _ in
                 self.width = pointViewW
                 self.center = centerPoint
-                self.pointShadowView.left = 0
-                self.pointCenterView.center = self.pointShadowView.center
+                self.pointView.left = 0
 
                 /// 计算 contentView 宽度
                 var contentViewW = self.getContentViewWidth(title: tagInfo.title)
@@ -143,11 +142,10 @@ private extension TagView {
                     contentViewX = 0
                 }
                 
-                self.width = contentViewW + self.pointShadowView.width * 0.5
+                self.width = contentViewW + self.pointView.width * 0.5
                 self.left = contentViewX
-                self.pointShadowView.right = self.width
-                self.pointCenterView.center = self.pointShadowView.center
-                self.contentView.left = self.pointShadowView.left - self.pointShadowView.width * 0.5
+                self.pointView.right = self.width
+                self.contentView.left = self.pointView.left - self.pointView.width * 0.5
                 self.contentView.width = contentViewW
                 UIView.animate(withDuration: 0.4, animations: {
                     self.contentView.left = 0
@@ -177,34 +175,34 @@ private extension TagView {
             /// 先把 contentView 隐藏
             UIView.animate(withDuration: 0.4, animations: {
                 self.contentView.width = 0
-                self.contentView.left = self.width - self.pointCenterView.width
+                self.contentView.left = self.width - self.pointView.width * 0.5
             }) { _ in
                 self.width = pointViewW
                 self.center = centerPoint
-                self.pointShadowView.left = 0
-                self.pointCenterView.center = self.pointShadowView.center
+                self.pointView.left = 0
                 
                 /// 计算 contentView 宽度
                 var contentViewW = self.getContentViewWidth(title: tagInfo.title)
                 /// 距离父控件的 x 值
-                let contentViewX = self.left + self.pointShadowView.width
+                let contentViewX = self.left + self.pointView.width * 0.5
                 /// 判断是否超出了屏幕
                 if contentViewX + contentViewW >= superViewW {
                     let excess = superViewW - contentViewX - contentViewW
                     contentViewW = contentViewW + excess
                 }
                 
-                /// 设置自己的宽度, - 4 是因为有4个像素缩进 pointView 里边, 线和点要链接在一起
+                /// 设置自己的宽度
                 self.contentView.width = contentViewW
-                self.contentView.left = self.pointCenterView.right
+                self.contentView.left = self.pointView.right - self.pointView.width * 0.5
+                let selfWidth = self.pointView.width * 0.5 + contentViewW
                 UIView.animate(withDuration: 0.4, animations: {
-                    self.width = self.pointShadowView.width + contentViewW - 4
+                    self.width = selfWidth
                 })
                 self.contentView.updateContent.onNext(.right)
                 
                 /// 改变源数据
-                let titleW = contentViewW - 25
-                let titleCenterX = self.left + self.pointShadowView.width + 21 + titleW * 0.5
+                let titleW = selfWidth - TagTool.lineWidth - self.pointView.width * 0.5
+                let titleCenterX = self.left + self.pointView.width * 0.5 + TagTool.lineWidth + titleW * 0.5
                 let titleCenterY = self.centerY
                 let titleCenterPointRatio = CGPoint(
                     x: titleCenterX / superViewW,
@@ -234,24 +232,24 @@ private extension TagView {
 
         var upTagInfo: TagInfo?
         if tagInfo.direction == .right {
-            
+
             /// 计算 point center 位置
-            let pointCenterX = left + pointShadowView.width * 0.5
+            let pointCenterX = left + pointView.width * 0.5
             let pointCenterY = centerY
             let centerPointRatio = CGPoint(
                 x: pointCenterX / superViewW,
                 y: pointCenterY / superViewH
             )
-            
+
             /// 计算 title center 位置
-            let titleW = width - pointShadowView.width - 21
-            let titleCenterX = left + pointShadowView.width + 21 + titleW * 0.5
+            let titleW = width - TagTool.lineWidth - pointView.width * 0.5
+            let titleCenterX = pointCenterX + TagTool.lineWidth + titleW * 0.5
             let titleCenterY = centerY
             let titleCenterPointRatio = CGPoint(
                 x: titleCenterX / superViewW,
                 y: titleCenterY / superViewH
             )
-            
+
             upTagInfo = TagInfo(
                 tagID: tagInfo.tagID,
                 centerPointRatio: centerPointRatio,
@@ -260,17 +258,17 @@ private extension TagView {
                 direction: tagInfo.direction
             )
         } else {
-            
+
             /// 计算 point center 位置
-            let pointCenterX = right - pointShadowView.width * 0.5
+            let pointCenterX = right - pointView.width * 0.5
             let pointCenterY = centerY
             let centerPointRatio = CGPoint(
                 x: pointCenterX / superViewW,
                 y: pointCenterY / superViewH
             )
-            
+
             /// 计算 title center 位置
-            let titleW = width - pointShadowView.width - 21
+            let titleW = width - TagTool.lineWidth - pointView.width * 0.5
             let titleCenterX = left + titleW * 0.5
             let titleCenterY = centerY
             let titleCenterPointRatio = CGPoint(
@@ -294,12 +292,12 @@ private extension TagView {
     func remove(tagInfo: TagInfo) {
 
         self.superview?.bringSubviewToFront(self)
-        
+
         UIView.animate(withDuration: 0.4, animations: {
             if tagInfo.direction == .right {
                 self.contentView.width = 0
             } else {
-                self.contentView.left = self.pointCenterView.left
+                self.contentView.left = self.pointView.left + self.pointView.width * 0.5
                 self.contentView.width = 0
             }
         }) { _ in
@@ -323,7 +321,7 @@ private extension TagView {
             y: tagInfo.centerPointRatio.y * superViewH
         )
         
-        /// 先初始化自己的位置
+        /// 先初始化自己的 大小 and 位置
         height = 22
         width = 14
         center = pointViewCenterPoint
@@ -334,49 +332,41 @@ private extension TagView {
         )
         
         /// 确定点
-        configurePointView()
-        pointShadowView.top = (height - pointShadowView.width) * 0.5
-        pointShadowView.left = 0
-        pointCenterView.center = pointShadowView.center
+        pointView.width = TagTool.pointWidth
+        pointView.height = TagTool.pointHeight
+        pointView.top = (height - pointView.height) * 0.5
+        pointView.left = 0
         
         contentView.top = 0
-        contentView.height = 22
-        addSubview(contentView)
+        contentView.height = TagTool.pointHeight
         
-        addSubview(pointShadowView)
-        addSubview(pointCenterView)
+        addSubview(contentView)
+        addSubview(pointView)
 
         if tagInfo.direction == .right {
             
-            let contentViewLeft = left + pointShadowView.width + 21
-            /// contentViewW = 线的宽度 + titleCenterPoint
-            let contentViewW = (titleCenterPoint.x - contentViewLeft) * 2 + 25
-            contentView.left = pointCenterView.right
+            /// 基于父控件的 left
+            let lblX = left + pointView.width * 0.5 + TagTool.lineWidth
+            let lblW = (titleCenterPoint.x - lblX) * 2
+            let contentViewW = lblW + TagTool.lineWidth
+            contentView.left = pointView.width * 0.5
             contentView.width = contentViewW
-            
             UIView.animate(withDuration: 0.4) {
-                /// 设置自己的宽度, - 4 是因为有4个像素缩进 pointView 里边, 线和点要链接在一起
-                self.width = self.pointShadowView.width + contentViewW - 4
+                self.width = self.pointView.width * 0.5 + contentViewW
             }
         } else {
             
             let rightSpace = superViewW - right
-            let contentViewRight = superViewW - pointShadowView.width - 21 - rightSpace
-            let contentViewW = (contentViewRight - titleCenterPoint.x) * 2 + 25
-            left = left - contentViewW + 4
-
-            /// 设置自己的宽度, - 4 是因为有4个像素缩进 pointView 里边, 线和点要链接在一起
-            width = pointShadowView.width + contentViewW - 4
-
-            /// 重新设置 pointView 位置
-            pointShadowView.left = width - pointShadowView.width
-            pointCenterView.center = pointShadowView.center
-
-            self.contentView.right = self.pointCenterView.left
+            let lblW = (superViewW - rightSpace - titleCenterPoint.x - pointView.width * 0.5 - TagTool.lineWidth) * 2
+            let contentViewW = lblW + TagTool.lineWidth
             
+            width = pointView.width * 0.5 + TagTool.lineWidth + lblW
+            left = left - contentViewW + pointView.width * 0.5
+            pointView.left = lblW + TagTool.lineWidth - pointView.width * 0.5
+            contentView.right = pointView.center.x
             UIView.animate(withDuration: 0.4) {
-                self.contentView.width = contentViewW
                 self.contentView.left = 0
+                self.contentView.width = contentViewW
             }
         }
         
@@ -422,8 +412,7 @@ private extension TagView {
                 guard let state = event.element else { return }
                 if state == .edit {
                     
-                    self.pointShadowView.addGestureRecognizer(self.pointGesture)
-                    self.pointCenterView.addGestureRecognizer(self.pointGesture)
+                    self.pointView.addGestureRecognizer(self.pointGesture)
                     
                     self.addGestureRecognizer(self.panGesture)
                     self.addGestureRecognizer(self.tapGesture)
@@ -431,8 +420,7 @@ private extension TagView {
                     
                     self.addGestureRecognizer(self.tapGesture)
                     
-                    self.pointShadowView.removeGestureRecognizer(self.pointGesture)
-                    self.pointCenterView.removeGestureRecognizer(self.pointGesture)
+                    self.pointView.removeGestureRecognizer(self.pointGesture)
                     self.removeGestureRecognizer(self.panGesture)
                 }
             }
@@ -452,45 +440,5 @@ private extension TagView {
             .disposed(by: rx.disposeBag)
     }
     
-    /// 添加没有位置的点
-    func configurePointView() {
-        /// 小黑点
-        pointShadowView.size = CGSize(width: 14, height: 14)
-        pointShadowView.cornerRadius = 7
-//        pointShadowView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
-        pointShadowView.backgroundColor = .black
-//        addAnimation()
-        
-        /// 小白点
-        pointCenterView.size = CGSize(width: 6, height: 6)
-        pointCenterView.cornerRadius = 3
-        pointCenterView.backgroundColor = .white
-        pointCenterView.shadowOffset = CGSize(width: 0, height: 1)
-        pointCenterView.shadowColor = .black
-        pointCenterView.shadowRadius = 1.5
-        pointCenterView.shadowOpacity = 0.5
-
-        pointCenterView.center = pointShadowView.center
-    }
-}
-
-
-private extension TagView {
-
-    func addAnimation() {
-        let cka = CAKeyframeAnimation(keyPath: "transform.scale")
-        //        cka.values = [0.7, 0.9, 0.9, 3.5, 0.9, 3.5]
-//        cka.values = [0.3, 0.5, 0.5, 1.0, 1.0, 0.5, 0.3]
-        cka.values = [0.4, 0.6, 0.6, 1.0, 1.0, 0.6, 0.6, 0.5]
-//        cka.keyTimes = [0.0, 0.3, 0.3, 0.65, 0.65, 1, 1, 1]
-        cka.keyTimes = [0.0, 0.3, 0.3, 0.5, 0.5, 0.8, 0.8, 1]
-        cka.repeatCount = MAXFLOAT
-        cka.duration = 2.0
-        pointShadowView.layer.add(cka, forKey: "cka")
-    }
-
-    func removeAnimation() {
-        //        pointShadowView.removeAnimation(forKey: "cka")
-    }
 }
 

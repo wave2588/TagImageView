@@ -142,36 +142,30 @@ private extension TagImageView {
             y: point.y / height
         )
         
-        let pointViewW: CGFloat = 14
-        let pointViewH: CGFloat = 22
+//        let pointViewW = TagTool.pointWidth
+//        let pointViewH = TagTool.pointHeight
         
         /// 根据 centerPoint 计算出点的位置
-        let pointViewX = point.x - pointViewW * 0.5
+//        let pointViewX = point.x - pointViewW * 0.5
 //        let pointViewY = point.y - pointViewH * 0.5
 
-        /// 21 是线的长度, 其实线的长度是 25, 缩进小黑点里 4 像素
-//        let lineW: CGFloat = 25
+        let lineW = TagTool.lineWidth
 
         /// 计算 lbl
-        let lbl = UILabel(text: title)
-        lbl.font = UIFont(name: "PingFangSC-Medium", size: 12)
-        lbl.sizeToFit()
-        /// 12 是文本前后都有 6 像素间距
-        var lblW = lbl.width + 12
+        var lblW = TagTool.getLblWidth(title: title)
 //        let lblH: CGFloat = 22
 
         var lblX: CGFloat = 0
         if direction == .right {
             
-            lblX = pointViewX + pointViewW + 21
+            lblX = point.x + lineW
             
             if lblX + lblW >= width {       /// 超出屏幕
                 let excess = width - lblX - lblW
                 lblW = lblW + excess
             }
         } else {
-            lblX = pointViewX - 21 - lblW
-            
+            lblX = point.x - TagTool.lineWidth - lblW
             if lblX <= 0 {              /// 超出屏幕
                 let excess = lblX
                 lblW = lblW + excess

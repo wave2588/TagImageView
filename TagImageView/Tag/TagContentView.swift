@@ -48,7 +48,7 @@ private extension TagContentView {
     
     func create(info: TagInfo) {
         
-        lineView.width = 25
+        lineView.width = TagTool.lineWidth
         lineView.height = 1
         lineView.top = (height - lineView.height) * 0.5
         lineView.backgroundColor = .white
