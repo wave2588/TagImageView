@@ -89,19 +89,23 @@ private extension TagView {
     func dragging(gesture: UIPanGestureRecognizer) {
         
         guard let superViewW = superview?.width,
-              let superViewH = superview?.height else {
+              let superViewH = superview?.height,
+              let superView = superview else {
                 return
         }
 
+        let point = gesture.translation(in: superView)
         if gesture.state == .began {
             
             self.superview?.bringSubviewToFront(self)
-            
         } else if gesture.state == .changed {
             
-            let point = gesture.location(in: superview)
-            center = point
-            
+            let newLeft = left + point.x
+            let newTop = top + point.y
+            left = newLeft
+            top = newTop
+            gesture.setTranslation(.zero, in: self)
+
         } else if gesture.state == .ended || gesture.state == .cancelled || gesture.state == .failed {
             update()
         }
@@ -133,7 +137,7 @@ private extension TagView {
                 self.pointView.left = 0
 
                 /// 计算 contentView 宽度
-                var contentViewW = self.getContentViewWidth(title: tagInfo.title)
+                var contentViewW = TagTool.getContentViewWidth(title: tagInfo.title)
                 /// 距离父控件的 X 值
                 var contentViewX = centerPoint.x - contentViewW
                 if contentViewX <= 0 {
@@ -182,7 +186,7 @@ private extension TagView {
                 self.pointView.left = 0
                 
                 /// 计算 contentView 宽度
-                var contentViewW = self.getContentViewWidth(title: tagInfo.title)
+                var contentViewW = TagTool.getContentViewWidth(title: tagInfo.title)
                 /// 距离父控件的 x 值
                 let contentViewX = self.left + self.pointView.width * 0.5
                 /// 判断是否超出了屏幕

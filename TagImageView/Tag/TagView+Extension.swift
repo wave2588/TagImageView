@@ -52,27 +52,3 @@ class TagTool {
         return width
     }
 }
-
-extension TagView {
-    
-    func getLblWidth(title: String) -> CGFloat {
-        let lbl = UILabel(text: title)
-        lbl.font = UIFont(name: "PingFangSC-Medium", size: 12)
-        lbl.sizeToFit()
-        /// 12 是文本前后都有 6 像素间距
-        let lblW = lbl.width + 12
-        return lblW
-    }
-    
-    func getContentViewWidth(title: String) -> CGFloat {
-        let lbl = UILabel(text: title)
-        lbl.font = UIFont(name: "PingFangSC-Medium", size: 12)
-        lbl.sizeToFit()
-        /// 12 是文本前后都有 6 像素间距
-        let lblW = lbl.width + 12
-        /// 25 是白线的宽度
-        let width = lblW + 25
-        return width
-    }
-
-}
