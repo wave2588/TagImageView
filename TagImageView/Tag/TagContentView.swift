@@ -81,6 +81,10 @@ private extension TagContentView {
     }
     
     func update(direction: TagDirection) {
+        backView.width = width - lineView.width
+        titleLbl.left = 6
+        titleLbl.width = backView.width - 12
+
         if direction == .right {
             lineView.left = 0
             backView.left = lineView.right
@@ -88,9 +92,6 @@ private extension TagContentView {
             backView.left = 0
             lineView.left = backView.right
         }
-        backView.width = width - lineView.width
-        titleLbl.left = 6
-        titleLbl.width = backView.width - 12
     }
 }
 

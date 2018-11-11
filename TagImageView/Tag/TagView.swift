@@ -125,10 +125,51 @@ private extension TagView {
         /// 改变方向... 相当于把 TagImageView 计算的过程重新来一遍....
         if tagInfo.direction == .right {
             /// 改到左边
-            debugPrint("改到左边")
-            UIView.animate(withDuration: 0.4) {
+            UIView.animate(withDuration: 0.4, animations: {
                 self.contentView.width = 0
+            }) { _ in
+                self.width = pointViewW
+                self.center = centerPoint
+                self.pointShadowView.left = 0
+                self.pointCenterView.center = self.pointShadowView.center
 
+                /// 计算 contentView 宽度
+                var contentViewW = self.getContentViewWidth(title: tagInfo.title)
+                /// 距离父控件的 X 值
+                var contentViewX = centerPoint.x - contentViewW
+                if contentViewX <= 0 {
+                    let excess = contentViewX
+                    contentViewW = contentViewW + excess
+                    contentViewX = 0
+                }
+                
+                self.width = contentViewW + self.pointShadowView.width * 0.5
+                self.left = contentViewX
+                self.pointShadowView.right = self.width
+                self.pointCenterView.center = self.pointShadowView.center
+                self.contentView.left = self.pointShadowView.left - self.pointShadowView.width * 0.5
+                self.contentView.width = contentViewW
+                UIView.animate(withDuration: 0.4, animations: {
+                    self.contentView.left = 0
+                })
+                self.contentView.input.updateContent.onNext(.left)
+                
+                /// 改变源数据
+                let titleCenterY = self.centerY
+                let titleCenterPointRatio = CGPoint(
+                    x: (self.left + contentViewW * 0.5) / superViewW,
+                    y: titleCenterY / superViewH
+                )
+                
+                let upTagInfo = TagInfo(
+                    tagID: tagInfo.tagID,
+                    centerPointRatio: tagInfo.centerPointRatio,
+                    title: tagInfo.title,
+                    titleCenterPointRatio: titleCenterPointRatio,
+                    direction: .left
+                )
+                self.tagInfo = upTagInfo
+                self.updateTagInfo.onNext(upTagInfo)
             }
 
         } else {
@@ -153,6 +194,15 @@ private extension TagView {
                     contentViewW = contentViewW + excess
                 }
                 
+                /// 设置自己的宽度, - 4 是因为有4个像素缩进 pointView 里边, 线和点要链接在一起
+                self.contentView.width = contentViewW
+                self.contentView.left = self.pointCenterView.right
+                UIView.animate(withDuration: 0.4, animations: {
+                    self.width = self.pointShadowView.width + contentViewW - 4
+                })
+                self.contentView.updateContent.onNext(.right)
+                
+                /// 改变源数据
                 let titleW = contentViewW - 25
                 let titleCenterX = self.left + self.pointShadowView.width + 21 + titleW * 0.5
                 let titleCenterY = self.centerY
@@ -170,14 +220,6 @@ private extension TagView {
                 )
                 self.tagInfo = upTagInfo
                 self.updateTagInfo.onNext(upTagInfo)
-                
-                /// 设置自己的宽度, - 4 是因为有4个像素缩进 pointView 里边, 线和点要链接在一起
-                self.contentView.width = contentViewW
-                self.contentView.left = self.pointCenterView.right
-                UIView.animate(withDuration: 0.4, animations: {
-                    self.width = self.pointShadowView.width + contentViewW - 4
-                })
-                self.contentView.updateContent.onNext(.right)
             }
         }
     }
