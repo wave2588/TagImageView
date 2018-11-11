@@ -112,7 +112,20 @@ private extension TagView {
             gesture.setTranslation(.zero, in: self)
 
         } else if gesture.state == .ended || gesture.state == .cancelled || gesture.state == .failed {
+
             update()
+
+            /// 删除区域 (50 50)
+            let point = gesture.location(in: superView)
+            let deleteX = (superViewW - 50) * 0.5
+            let deleteY = superViewH - 50
+            if  point.x >= deleteX &&
+                point.x <= deleteX + 50 &&
+                point.y >= deleteY &&
+                point.y <= deleteY + 50 {
+                guard let info = tagInfo else { return }
+                removeTagInfo.onNext(info)
+            }
         }
     }
     

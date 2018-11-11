@@ -91,6 +91,7 @@ private extension TagImageView {
                         }
                     infos.remove(at: index)
                     self.addTagInfos.accept(infos)
+                    self.removeTagInfos.accept([info])
                 })
                 .disposed(by: rx.disposeBag)
             

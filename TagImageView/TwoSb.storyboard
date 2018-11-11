@@ -66,15 +66,28 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="删 除" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wVg-0O-6Xg">
+                                <rect key="frame" x="162.5" y="400" width="50" height="50"/>
+                                <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="50" id="aLg-fj-aBV"/>
+                                    <constraint firstAttribute="height" constant="50" id="kBu-Md-fCu"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <color key="textColor" red="1" green="0.10222643872912018" blue="0.081781660441893944" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="1" green="0.1764705882" blue="0.33333333329999998" alpha="0.69999999999999996" colorSpace="calibratedRGB"/>
                         <constraints>
+                            <constraint firstItem="wVg-0O-6Xg" firstAttribute="centerX" secondItem="Z9S-O5-nE0" secondAttribute="centerX" id="7TA-Ch-ryV"/>
                             <constraint firstItem="Srt-Wt-M2d" firstAttribute="leading" secondItem="eCh-31-lyb" secondAttribute="leading" constant="20" id="9vU-lm-xht"/>
                             <constraint firstItem="765-hz-ehP" firstAttribute="leading" secondItem="eCh-31-lyb" secondAttribute="leading" constant="10" id="FkW-sU-XAM"/>
                             <constraint firstItem="6v4-9m-Z1Q" firstAttribute="centerY" secondItem="epf-2P-Hla" secondAttribute="centerY" id="Haj-9D-SGA"/>
                             <constraint firstItem="eCh-31-lyb" firstAttribute="trailing" secondItem="765-hz-ehP" secondAttribute="trailing" constant="10" id="LR4-DD-gd2"/>
                             <constraint firstItem="6v4-9m-Z1Q" firstAttribute="leading" secondItem="epf-2P-Hla" secondAttribute="trailing" constant="20" id="MTg-OU-QsK"/>
                             <constraint firstItem="765-hz-ehP" firstAttribute="top" secondItem="eCh-31-lyb" secondAttribute="top" constant="80" id="X6Z-X7-jMc"/>
+                            <constraint firstItem="wVg-0O-6Xg" firstAttribute="bottom" secondItem="765-hz-ehP" secondAttribute="bottom" id="ZfT-68-KOc"/>
                             <constraint firstItem="Agq-l6-QWQ" firstAttribute="top" secondItem="epf-2P-Hla" secondAttribute="bottom" constant="20" id="ZxZ-to-jsK"/>
                             <constraint firstItem="eCh-31-lyb" firstAttribute="trailing" secondItem="Srt-Wt-M2d" secondAttribute="trailing" constant="20" id="av5-aX-NvH"/>
                             <constraint firstItem="epf-2P-Hla" firstAttribute="leading" secondItem="eCh-31-lyb" secondAttribute="leading" constant="20" id="biB-h5-AxJ"/>

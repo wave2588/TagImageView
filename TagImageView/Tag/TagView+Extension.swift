@@ -48,7 +48,7 @@ class TagTool {
         /// 12 是文本前后都有 6 像素间距
         let lblW = lbl.width + 12
         /// 25 是白线的宽度
-        let width = lblW + 25
+        let width = lblW + lineWidth
         return width
     }
 }
