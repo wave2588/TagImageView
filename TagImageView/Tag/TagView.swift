@@ -19,8 +19,9 @@ import SwifterSwift
 
 protocol TagViewInputs {
     
-    var state: PublishSubject<State> { get }
-    
+    /// 是否是编辑模式
+    var isEdit: BehaviorRelay<Bool> { get }
+
     /// 添加 tag 信息
     var createTag: PublishSubject<TagInfo> { get }
     
@@ -42,8 +43,8 @@ protocol TagViewOutputs {
 
 class TagView: UIView {
     
-    var input: TagViewInputs { return self }
-    let state = PublishSubject<State>()
+    var inputs: TagViewInputs { return self }
+    let isEdit = BehaviorRelay<Bool>(value: false)
     let createTag = PublishSubject<TagInfo>()
     let removeTag = PublishSubject<TagInfo>()
 
@@ -441,25 +442,19 @@ private extension TagView {
     func configureTagInfo() {
         
         clipsToBounds = true
+
+        addGestureRecognizer(tapGesture)
         
-        state
-            .subscribe { [unowned self] event in
-                
-                guard let state = event.element else { return }
-                if state == .edit {
-                    
-                    self.pointView.addGestureRecognizer(self.pointGesture)
-                    
+        isEdit
+            .subscribe(onNext: { [unowned self] edit in
+                if edit {
                     self.addGestureRecognizer(self.panGesture)
-                    self.addGestureRecognizer(self.tapGesture)
+                    self.pointView.addGestureRecognizer(self.pointGesture)
                 } else {
-                    
-                    self.addGestureRecognizer(self.tapGesture)
-                    
-                    self.pointView.removeGestureRecognizer(self.pointGesture)
                     self.removeGestureRecognizer(self.panGesture)
+                    self.pointView.removeGestureRecognizer(self.pointGesture)
                 }
-            }
+            })
             .disposed(by: rx.disposeBag)
         
         createTag

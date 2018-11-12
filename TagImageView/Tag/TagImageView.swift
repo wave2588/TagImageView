@@ -12,18 +12,10 @@ import RxCocoa
 import NSObject_Rx
 import SwifterSwift
 
-/// UIImageView 有以下三个模式可供选择
-enum State {
-    case normal     /// 普通状态, 没有状态
-    case edit       /// 全局点击是编辑状态
-    case image      /// 全局点击标签进行隐藏或展示
-    case video      /// 不需要全局点击按钮
-}
-
 protocol TagImageViewInputs {
     
-    /// 设置 ImageView 的模式
-    var state: BehaviorRelay<State> { get }
+    /// 是否是编辑模式
+    var isEdit: BehaviorRelay<Bool> { get }
     /// 添加标签
     var addTagInfos: BehaviorRelay<[TagInfo]> { get }
     /// 删除标签
@@ -39,12 +31,14 @@ protocol TagImageViewOutputs {
 class TagImageView: UIImageView {
 
     var inputs: TagImageViewInputs { return self }
-    let state = BehaviorRelay<State>(value: .normal)
+    let isEdit = BehaviorRelay<Bool>(value: false)
     let addTagInfos = BehaviorRelay<[TagInfo]>(value: ([]))
     let removeTagInfos = BehaviorRelay<[TagInfo]>(value: ([]))
 
     var outputs: TagImageViewOutputs { return self }
     let clickTagView = PublishSubject<TagInfo>()
+
+    let tapGesture = UITapGestureRecognizer()
 
     /// test
     var testTitle: String = ""
@@ -53,6 +47,7 @@ class TagImageView: UIImageView {
         super.awakeFromNib()
 
         configureTagViews()
+        configureGesture()
     }
 }
 
@@ -109,8 +104,8 @@ private extension TagImageView {
                 })
                 .disposed(by: rx.disposeBag)
             addSubview(tagView)
-            tagView.input.createTag.onNext(tagInfo)
-            tagView.input.state.onNext(state.value)
+            tagView.inputs.createTag.onNext(tagInfo)
+            tagView.inputs.isEdit.accept(isEdit.value)
             tagView.clickTagView
                 .bind(to: clickTagView)
                 .disposed(by: rx.disposeBag)
@@ -128,13 +123,13 @@ private extension TagImageView {
 
         if tagViews.count != 0 {
             if let tagView = tagViews.first as? TagView {
-                tagView.input.removeTag.onNext(tagInfo)
+                tagView.inputs.removeTag.onNext(tagInfo)
             }
         }
     }
     
     /// 点击创建的时候 centerPoint  title  titleCenterPoint  direction  都需要计算出来
-    func createTagInfo(point: CGPoint, title: String) -> TagInfo? {
+    func createTagInfo(point: CGPoint, title: String) -> TagInfo {
 
         let direction: TagDirection = point.x >= width * 0.5 ? .left : .right
         
@@ -144,18 +139,10 @@ private extension TagImageView {
             y: point.y / height
         )
         
-//        let pointViewW = TagTool.pointWidth
-//        let pointViewH = TagTool.pointHeight
-        
-        /// 根据 centerPoint 计算出点的位置
-//        let pointViewX = point.x - pointViewW * 0.5
-//        let pointViewY = point.y - pointViewH * 0.5
-
         let lineW = TagTool.lineWidth
 
         /// 计算 lbl
         var lblW = TagTool.getLblWidth(title: title)
-//        let lblH: CGFloat = 22
 
         var lblX: CGFloat = 0
         if direction == .right {
@@ -197,9 +184,20 @@ private extension TagImageView {
     
     func configureTagViews() {
         
-        state
-            .subscribe(onNext: { [unowned self] state in
-                self.configureGesture()
+        isEdit
+            .subscribe(onNext: { [unowned self] edit in
+                if self.isEdit.value {
+                    self.addGestureRecognizer(self.tapGesture)
+                } else {
+                    self.removeGestureRecognizer(self.tapGesture)
+                }
+                
+                /// 测试代码, 实际情况下不会出现
+                self.subviews.forEach { view in
+                    if let tagView = view as? TagView {
+                        tagView.inputs.isEdit.accept(edit)
+                    }
+                }
             })
             .disposed(by: rx.disposeBag)
         
@@ -224,57 +222,21 @@ private extension TagImageView {
         
         isUserInteractionEnabled = true
         
-        let tapGesture = UITapGestureRecognizer()
-
-        let state = self.state.value
-        if state == .edit || state == .image {
-            addGestureRecognizer(tapGesture)
-        }
-        
         tapGesture.rx.event
             .bind(onNext: { [unowned self] gesture in
-                if state == .edit {
-                    let point = gesture.location(in: self)
-                    if point.x > 0 &&
-                        point.y > 0 &&
-                        point.x < self.width &&
-                        point.y < self.height
-                    {
-                        guard let tagInfo = self.createTagInfo(point: point, title: self.testTitle) else {
-                            return
-                        }
-                        var infos = self.addTagInfos.value
-                        infos.append(tagInfo)
-                        self.addTagInfos.accept(infos)
-                    }
-                } else if state == .image {
-                    
-                    /// 获取当前页面上所有的 tagViews
-                    let tagViews = self.subviews.filter({ view -> Bool in
-                        if let _ = view as? TagView {
-                            return true
-                        }
-                        return false
-                    })
-                    
-                    if tagViews.count == 0 {
-                        /// 添加
-                        self.addTagInfos.accept(self.addTagInfos.value)
-                    } else {
-                        /// 删除
-                        self.removeTagInfos.accept(self.addTagInfos.value)
-                    }
+                let point = gesture.location(in: self)
+                if point.x > 0 &&
+                    point.y > 0 &&
+                    point.x < self.width &&
+                    point.y < self.height
+                {
+                    let tagInfo = self.createTagInfo(point: point, title: self.testTitle)
+                    var infos = self.addTagInfos.value
+                    infos.append(tagInfo)
+                    self.addTagInfos.accept(infos)
                 }
             })
             .disposed(by: rx.disposeBag)
-        
-        
-        /// 测试代码, 实际情况下不会出现
-        subviews.forEach { view in
-            if let tagView = view as? TagView {
-                tagView.input.state.onNext(state)
-            }
-        }
     }
     
 }

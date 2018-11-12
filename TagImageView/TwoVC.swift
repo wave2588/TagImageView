@@ -47,7 +47,7 @@ class TwoVC: UIViewController {
         
         //        let infos = [one, two, three]
         let infos = [TagInfo]()
-        tagImageView.inputs.state.accept(.edit)
+        tagImageView.inputs.isEdit.accept(true)
         tagImageView.inputs.addTagInfos.accept(infos)
         
         let tap = UITapGestureRecognizer()
@@ -71,10 +71,10 @@ class TwoVC: UIViewController {
     
     @IBAction func change(_ sender: UIButton) {
         if sender.titleLabel?.text == "编辑" {
-            tagImageView.inputs.state.accept(.image)
+            tagImageView.inputs.isEdit.accept(false)
             sender.setTitle("图片", for: .normal)
         } else {
-            tagImageView.inputs.state.accept(.edit)
+            tagImageView.inputs.isEdit.accept(true)
             sender.setTitle("编辑", for: .normal)
         }
     }
