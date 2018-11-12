@@ -113,8 +113,6 @@ private extension TagView {
             }
             gesture.setTranslation(.zero, in: self)
 
-            updateLocation()
-            
             /// 算一个正常宽度, 然后跟当前宽度进行比较
             let pCenterPoint = CGPoint(
                 x: tagInfo.centerPointRatio.x * superViewW,
@@ -129,6 +127,8 @@ private extension TagView {
             let normalWidth = pointView.width * 0.5 + TagTool.lineWidth + normalTitleWidth
 
         } else if gesture.state == .ended || gesture.state == .cancelled || gesture.state == .failed {
+
+            updateLocation()
 
             /// 删除区域 (50 50)
             let point = gesture.location(in: superView)

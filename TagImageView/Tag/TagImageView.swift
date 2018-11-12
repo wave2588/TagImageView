@@ -32,6 +32,7 @@ protocol TagImageViewInputs {
 
 protocol TagImageViewOutputs {
     
+    /// 点击 Tag
     var clickTagView: PublishSubject<TagInfo> { get }
 }
 
