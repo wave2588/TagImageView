@@ -84,7 +84,7 @@ private extension TagImageView {
                             return info.tagID == deleteInfo.tagID
                         }) else {
                                 return
-                        }
+                    }
                     infos.remove(at: index)
                     self.addTagInfos.accept(infos)
                     self.removeTagInfos.accept([info])

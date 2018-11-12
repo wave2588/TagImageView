@@ -23,7 +23,7 @@ protocol TagContentViewInputs {
 
 class TagContentView: UIView {
     
-    var input: TagContentViewInputs { return self }
+    var inputs: TagContentViewInputs { return self }
     let createContent = PublishSubject<TagInfo>()
     let updateContent = PublishSubject<TagDirection>()
 

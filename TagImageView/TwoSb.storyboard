@@ -57,7 +57,7 @@
                                     <action selector="close:" destination="TEy-ws-qZ5" eventType="touchUpInside" id="Wk4-EG-uyy"/>
                                 </connections>
                             </button>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="测试问发送到金坷垃" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Srt-Wt-M2d">
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="不信你就数数看看这是十五个字吗" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Srt-Wt-M2d">
                                 <rect key="frame" x="20" y="507" width="335" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="Br4-ib-EWn"/>

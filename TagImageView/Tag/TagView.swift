@@ -94,15 +94,16 @@ private extension TagView {
               let tagInfo = tagInfo else {
                 return
         }
+        
         let locationPoint = gesture.location(in: superView)
         let translationPotion = gesture.translation(in: superView)
+        
         if gesture.state == .began {
             
             self.superview?.bringSubviewToFront(self)
             beganPoint = locationPoint
         } else if gesture.state == .changed {
             
-            /// 计算出偏移量
             let newLeft = left + translationPotion.x
             let newTop = top + translationPotion.y
 
@@ -114,7 +115,7 @@ private extension TagView {
             }
             gesture.setTranslation(.zero, in: self)
 
-            /// 算一个正常宽度, 然后跟当前宽度进行比较
+            /// 计算一个正常宽度, 然后跟当前宽度进行比较
             let pCenterPoint = CGPoint(
                 x: tagInfo.centerPointRatio.x * superViewW,
                 y: tagInfo.centerPointRatio.y * superViewH
@@ -124,9 +125,54 @@ private extension TagView {
                 x: tagInfo.titleCenterPointRatio.x * superViewW,
                 y: tagInfo.titleCenterPointRatio.y * superViewH
             )
-            let normalTitleWidth = (titleCenterPoint.x - pCenterPoint.x - TagTool.lineWidth) * 2
+            let normalTitleWidth = TagTool.getLblWidth(title: tagInfo.title)
             let normalWidth = pointView.width * 0.5 + TagTool.lineWidth + normalTitleWidth
 
+            let zoom: CGFloat = 3
+            let space: CGFloat = 3
+            let minWidth: CGFloat = 100
+
+            if tagInfo.direction == .right {
+                if width >= minWidth && left + width >= superViewW - space {
+                    var newWidth = width - zoom
+                    if newWidth <= minWidth {
+                        newWidth = minWidth
+                    }
+                    width = newWidth
+                    debugPrint(width)
+                    left = superViewW - width - space
+                } else if width < normalWidth{
+                    var newWitdh = width + zoom + 3
+                    if newWitdh >= normalWidth {
+                        newWitdh = normalWidth
+                    }
+                    width = newWitdh
+                    left = superViewW - width - space
+                }
+                contentView.width = width - pointView.width * 0.5
+                contentView.inputs.updateContent.onNext(.right)
+            } else {
+
+                if width >= minWidth && left <= space {
+                    var newWidth = width - zoom
+                    if newWidth <= minWidth {
+                        newWidth = minWidth
+                    }
+                    width = newWidth
+                    left = space
+                } else if width < normalWidth {
+                    var newWitdh = width + zoom + 3
+                    if newWitdh >= normalWidth {
+                        newWitdh = normalWidth
+                    }
+                    width = newWitdh
+                    left = space
+                }
+                contentView.width = width - pointView.width * 0.5
+                pointView.centerX = contentView.width
+                contentView.inputs.updateContent.onNext(.left)
+            }
+            
         } else if gesture.state == .ended || gesture.state == .cancelled || gesture.state == .failed {
 
             updateLocation()
@@ -211,6 +257,7 @@ private extension TagView {
         updateTagInfo.onNext(info)
     }
 
+    /// 点击小点点切换方向
     func changeDirection(tagInfo: TagInfo) {
         
         guard let superViewW = superview?.width,
@@ -235,7 +282,7 @@ private extension TagView {
                 self.width = pointViewW
                 self.center = centerPoint
                 self.pointView.left = 0
-
+                
                 /// 计算 contentView 宽度
                 var contentViewW = TagTool.getContentViewWidth(title: tagInfo.title)
                 /// 距离父控件的 X 值
@@ -248,13 +295,14 @@ private extension TagView {
                 
                 self.width = contentViewW + self.pointView.width * 0.5
                 self.left = contentViewX
+                
                 self.pointView.right = self.width
                 self.contentView.left = self.pointView.left - self.pointView.width * 0.5
                 self.contentView.width = contentViewW
                 UIView.animate(withDuration: 0.25, animations: {
                     self.contentView.left = 0
                 })
-                self.contentView.input.updateContent.onNext(.left)
+                self.contentView.inputs.updateContent.onNext(.left)
                 
                 /// 改变源数据
                 let titleCenterY = self.centerY
@@ -326,6 +374,7 @@ private extension TagView {
         }
     }
     
+    /// 删除
     func remove(tagInfo: TagInfo) {
 
         self.superview?.bringSubviewToFront(self)
@@ -342,6 +391,7 @@ private extension TagView {
         }
     }
     
+    /// 添加
     func create(tagInfo: TagInfo) {
         
         guard let superViewW = superview?.width,
@@ -407,7 +457,7 @@ private extension TagView {
             }
         }
         
-        contentView.input.createContent.onNext(tagInfo)
+        contentView.inputs.createContent.onNext(tagInfo)
 
         configureGesture()
     }
