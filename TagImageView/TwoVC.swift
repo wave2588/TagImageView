@@ -70,13 +70,23 @@ class TwoVC: UIViewController {
     }
     
     @IBAction func change(_ sender: UIButton) {
-        if sender.titleLabel?.text == "编辑" {
-            tagImageView.inputs.isEdit.accept(false)
-            sender.setTitle("图片", for: .normal)
-        } else {
-            tagImageView.inputs.isEdit.accept(true)
-            sender.setTitle("编辑", for: .normal)
-        }
+//        if sender.titleLabel?.text == "编辑" {
+//            tagImageView.inputs.isEdit.accept(false)
+//            sender.setTitle("图片", for: .normal)
+//        } else {
+//            tagImageView.inputs.isEdit.accept(true)
+//            sender.setTitle("编辑", for: .normal)
+//        }
+        
+        
+        let size = CGSize(width: 100, height: 100)
+        let stickerView = StickerView(frame: .zero)
+        stickerView.size = size
+        stickerView.center = tagImageView.center
+        let point = CGPoint(x: 0.5, y: 0.5)
+        let stickerInfo = StickerInfo(stickerID: NSUUID().uuidString, image: UIImage(named: "test2")!  , centerPointRatio: point, size: size, transform: stickerView.transform)
+        tagImageView.inputs.addStickerInfos.accept([stickerInfo])
+
     }
     
     @IBAction func printTag(_ sender: UIButton) {
@@ -91,6 +101,7 @@ class TwoVC: UIViewController {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
     }
 }
 

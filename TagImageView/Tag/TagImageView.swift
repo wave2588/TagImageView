@@ -20,6 +20,12 @@ protocol TagImageViewInputs {
     var addTagInfos: BehaviorRelay<[TagInfo]> { get }
     /// 删除标签
     var removeTagInfos: BehaviorRelay<[TagInfo]> { get }
+    
+    
+    /// 添加贴纸
+    var addStickerInfos: BehaviorRelay<[StickerInfo]> { get }
+    /// 删除贴纸
+    var removeStickerInfos: BehaviorRelay<[StickerInfo]> { get }
 }
 
 protocol TagImageViewOutputs {
@@ -34,6 +40,9 @@ class TagImageView: UIImageView {
     let isEdit = BehaviorRelay<Bool>(value: false)
     let addTagInfos = BehaviorRelay<[TagInfo]>(value: ([]))
     let removeTagInfos = BehaviorRelay<[TagInfo]>(value: ([]))
+
+    let addStickerInfos = BehaviorRelay<[StickerInfo]>(value: ([]))
+    let removeStickerInfos = BehaviorRelay<[StickerInfo]>(value: ([]))
 
     var outputs: TagImageViewOutputs { return self }
     let clickTagView = PublishSubject<TagInfo>()
@@ -50,6 +59,7 @@ class TagImageView: UIImageView {
         
         configureTagViews()
         configureGesture()
+        configureStickerInfos()
     }
 }
 
@@ -186,15 +196,61 @@ private extension TagImageView {
     
     func createStickerInfo(point: CGPoint) {
         
-        let size = CGSize(width: 100, height: 100)
-        let stickerView = StickerView(frame: .zero)
-        stickerView.size = size
-        stickerView.center = point
-        addSubview(stickerView)
-        
-        let stickerInfo = StickerInfo(stickerID: NSUUID().uuidString, image: UIImage(named: "test2")!  , centerPointRatio: point, size: size, transform: stickerView.transform)
-        stickerView.inputs.stickerInfo.onNext(stickerInfo)
     }
+}
+
+private extension TagImageView {
+    
+    func add(stickerInfo: StickerInfo) {
+        
+        /// 判断subviews是否有当前这个视图了
+        let stickerViews = subviews.filter { view -> Bool in
+            if let skView = view as? StickerView {
+                return skView.stickerID == stickerInfo.stickerID
+            }
+            return false
+        }
+        if stickerViews.count != 0 {
+            return
+        }
+        
+        let stickerView = StickerView(frame: .zero)
+        addSubview(stickerView)
+        stickerView.inputs.createSticker.onNext(stickerInfo)
+        
+        stickerView.outputs.updateSticker
+            .subscribe(onNext: { info in
+            
+            })
+            .disposed(by: rx.disposeBag)
+    }
+    
+    func remove(stickerInfo: StickerInfo) {
+        
+    }
+}
+
+private extension TagImageView {
+    
+    func configureStickerInfos() {
+        
+        addStickerInfos
+            .subscribe(onNext: { [unowned self] infos in
+                infos.forEach({ info in
+                    self.add(stickerInfo: info)
+                })
+            })
+            .disposed(by: rx.disposeBag)
+        
+        removeStickerInfos
+            .subscribe(onNext: { [unowned self] infos in
+                infos.forEach({ info in
+                    self.remove(stickerInfo: info)
+                })
+            })
+            .disposed(by: rx.disposeBag)
+    }
+    
 }
 
 private extension TagImageView {
