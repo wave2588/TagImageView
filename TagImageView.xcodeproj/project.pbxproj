@@ -18,6 +18,8 @@
 		407A78B4219288640039D820 /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 407A78B3219288640039D820 /* UIView+Extension.swift */; };
 		407A78BC2192C8990039D820 /* UIView+Frame.m in Sources */ = {isa = PBXBuildFile; fileRef = 407A78BA2192C8980039D820 /* UIView+Frame.m */; };
 		407A78BE2192E56A0039D820 /* TagContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 407A78BD2192E56A0039D820 /* TagContentView.swift */; };
+		40C398D9219FBF7300F7A069 /* StickerInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40C398D8219FBF7300F7A069 /* StickerInfo.swift */; };
+		40C398DB219FBFE700F7A069 /* StickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40C398DA219FBFE700F7A069 /* StickerView.swift */; };
 		40EDA2D621955EDD002830CD /* TagView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40EDA2D521955EDD002830CD /* TagView+Extension.swift */; };
 		40EDA2D821956DBB002830CD /* TwoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40EDA2D721956DBB002830CD /* TwoVC.swift */; };
 		40EDA2DA219571F5002830CD /* TwoSb.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 40EDA2D9219571F5002830CD /* TwoSb.storyboard */; };
@@ -42,6 +44,8 @@
 		407A78BA2192C8980039D820 /* UIView+Frame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Frame.m"; sourceTree = "<group>"; };
 		407A78BB2192C8980039D820 /* UIView+Frame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Frame.h"; sourceTree = "<group>"; };
 		407A78BD2192E56A0039D820 /* TagContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagContentView.swift; sourceTree = "<group>"; };
+		40C398D8219FBF7300F7A069 /* StickerInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StickerInfo.swift; sourceTree = "<group>"; };
+		40C398DA219FBFE700F7A069 /* StickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerView.swift; sourceTree = "<group>"; };
 		40EDA2D521955EDD002830CD /* TagView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TagView+Extension.swift"; sourceTree = "<group>"; };
 		40EDA2D721956DBB002830CD /* TwoVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoVC.swift; sourceTree = "<group>"; };
 		40EDA2D9219571F5002830CD /* TwoSb.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TwoSb.storyboard; sourceTree = "<group>"; };
@@ -100,6 +104,7 @@
 		407A78AB219287790039D820 /* Tag */ = {
 			isa = PBXGroup;
 			children = (
+				40C398D7219FBF6700F7A069 /* Sticker */,
 				407A78AC219287890039D820 /* TagImageView.swift */,
 				407A78AD219287890039D820 /* TagView.swift */,
 				407A78BD2192E56A0039D820 /* TagContentView.swift */,
@@ -119,6 +124,15 @@
 				407A78B92192C8970039D820 /* TagImageView-Bridging-Header.h */,
 			);
 			path = Extension;
+			sourceTree = "<group>";
+		};
+		40C398D7219FBF6700F7A069 /* Sticker */ = {
+			isa = PBXGroup;
+			children = (
+				40C398D8219FBF7300F7A069 /* StickerInfo.swift */,
+				40C398DA219FBFE700F7A069 /* StickerView.swift */,
+			);
+			path = Sticker;
 			sourceTree = "<group>";
 		};
 		E023C08307AF948FC3B01E2B /* Pods */ = {
@@ -275,11 +289,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				407A78B4219288640039D820 /* UIView+Extension.swift in Sources */,
+				40C398D9219FBF7300F7A069 /* StickerInfo.swift in Sources */,
 				407A78BE2192E56A0039D820 /* TagContentView.swift in Sources */,
 				40EDA2D821956DBB002830CD /* TwoVC.swift in Sources */,
 				40EDA2D621955EDD002830CD /* TagView+Extension.swift in Sources */,
 				407A78AE219287890039D820 /* TagImageView.swift in Sources */,
 				40EDA2DE219885E3002830CD /* TagPointView.swift in Sources */,
+				40C398DB219FBFE700F7A069 /* StickerView.swift in Sources */,
 				407A78982192869B0039D820 /* ViewController.swift in Sources */,
 				407A78BC2192C8990039D820 /* UIView+Frame.m in Sources */,
 				407A78962192869B0039D820 /* AppDelegate.swift in Sources */,

@@ -46,6 +46,8 @@ class TagImageView: UIImageView {
     override func awakeFromNib() {
         super.awakeFromNib()
 
+        clipsToBounds = true
+        
         configureTagViews()
         configureGesture()
     }
@@ -182,6 +184,21 @@ private extension TagImageView {
 
 private extension TagImageView {
     
+    func createStickerInfo(point: CGPoint) {
+        
+        let size = CGSize(width: 100, height: 100)
+        let stickerView = StickerView(frame: .zero)
+        stickerView.size = size
+        stickerView.center = point
+        addSubview(stickerView)
+        
+        let stickerInfo = StickerInfo(stickerID: NSUUID().uuidString, image: UIImage(named: "test2")!  , centerPointRatio: point, size: size, transform: stickerView.transform)
+        stickerView.inputs.stickerInfo.onNext(stickerInfo)
+    }
+}
+
+private extension TagImageView {
+    
     func configureTagViews() {
         
         isEdit
@@ -230,10 +247,13 @@ private extension TagImageView {
                     point.x < self.width &&
                     point.y < self.height
                 {
-                    let tagInfo = self.createTagInfo(point: point, title: self.testTitle)
-                    var infos = self.addTagInfos.value
-                    infos.append(tagInfo)
-                    self.addTagInfos.accept(infos)
+//                    let tagInfo = self.createTagInfo(point: point, title: self.testTitle)
+//                    var infos = self.addTagInfos.value
+//                    infos.append(tagInfo)
+//                    self.addTagInfos.accept(infos)
+                    
+                    self.createStickerInfo(point: point)
+                    
                 }
             })
             .disposed(by: rx.disposeBag)

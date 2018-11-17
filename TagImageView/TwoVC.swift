@@ -89,5 +89,8 @@ class TwoVC: UIViewController {
     @IBAction func close(_ sender: Any) {
         dismiss(animated: true, completion: nil)
     }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+    }
 }
 
